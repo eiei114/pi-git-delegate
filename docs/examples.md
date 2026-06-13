@@ -1,49 +1,50 @@
 # Examples
 
-This template ships one minimal example for each Pi package resource type.
+Pi Git Delegate ships typed tools for delegating heavy git read operations to subagents.
 
 ## Extension
 
-`extensions/hello.ts` registers:
+`extensions/index.ts` registers:
 
-- `/template-hello`
-- a small session status indicator
+- `git_diff_summary`
+- `git_log_summary`
+- `git_blame_summary`
+- `/git-delegate:configure`
+- `/git-delegate:status`
 
-Try it with:
+Try it locally:
 
 ```bash
 pi -e .
 ```
 
-Then run:
+Then call a tool from Pi:
 
 ```txt
-/template-hello YourName
+git_diff_summary({ref: "HEAD~3"})
+git_log_summary({range: "HEAD~5..HEAD"})
+git_blame_summary({path: "lib/config.ts"})
 ```
 
-## Agent Skill
+## Settings
 
-`skills/example-skill/SKILL.md` demonstrates a minimal Agent Skill.
+Configure per-tool subagent models:
 
-Replace it with your real workflow instructions.
+```txt
+/git-delegate:configure
+/git-delegate:status
+```
 
-## Prompt template
+Manual example for `.pi/settings.json`:
 
-`prompts/example.md` demonstrates a tiny prompt template with one variable.
+```json
+{
+  "pi-git-delegate": {
+    "diff": { "provider": "anthropic", "model": "claude-3-5-haiku-latest" },
+    "log": { "provider": null, "model": null },
+    "blame": { "provider": null, "model": null }
+  }
+}
+```
 
-## Theme
-
-`themes/example-theme.json` is a placeholder theme. Replace it or remove `themes/` if your package does not ship themes.
-
-## Typed custom tool
-
-`extensions/index.ts` registers:
-
-- `/template-info`
-- `template_greet` custom tool
-
-The tool demonstrates:
-
-- TypeBox object parameters
-- a string enum schema via `StringEnum`
-- shared logic imported from `lib/greeting.ts`
+`null` uses the current session provider/model.

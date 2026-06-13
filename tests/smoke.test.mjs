@@ -8,9 +8,9 @@ const publishWorkflow = await readFile(new URL("../.github/workflows/publish.yml
 
 test("package declares pi resources", () => {
   assert.deepEqual(packageJson.pi.extensions, ["./extensions"]);
-  assert.deepEqual(packageJson.pi.skills, ["./skills"]);
-  assert.deepEqual(packageJson.pi.prompts, ["./prompts"]);
-  assert.deepEqual(packageJson.pi.themes, ["./themes"]);
+  assert.equal(packageJson.pi.skills, undefined);
+  assert.equal(packageJson.pi.prompts, undefined);
+  assert.equal(packageJson.pi.themes, undefined);
 });
 
 test("package is discoverable as a Pi package", () => {

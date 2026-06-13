@@ -50,10 +50,14 @@
 ## Pi package manifest
 
 - [ ] `pi.extensions` に公開する拡張だけを残す
-- [ ] `pi.skills` に公開する skill だけを残す
-- [ ] 不要なら `prompts/` を消す
-- [ ] 不要なら `themes/` を消す
-- [ ] サンプル名を実名に変える
+- [ ] **extension のみで ship するなら** `pi.skills` / `pi.prompts` / `pi.themes` を `package.json` から削除する
+- [ ] **extension のみで ship するなら** `skills/` / `prompts/` / `themes/` ディレクトリを削除する
+- [ ] skill を出すなら `example-skill` を **package 固有名** にリネームする（例: `<pkg>-workflow`）
+- [ ] prompt を出すなら `example.md` を **package 固有名** にリネームする（例: `<pkg>-summarize.md`）
+- [ ] theme を出すなら built-in theme と同じ **全必須 color token** を入れる。未完成なら `themes/` ごと削除
+- [ ] `package.json` の `files` から、削除した resource パスを外す
+- [ ] skill を出さないなら `keywords` / GitHub topics から `agent-skill` を外す
+- [ ] Pi 起動ログに `[Skill conflicts]` / `[Prompt conflicts]` / `[Theme conflicts]` が **自 package 分で出ない** ことを確認する
 
 ## Documentation
 

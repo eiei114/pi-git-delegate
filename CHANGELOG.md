@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 This project follows semantic versioning.
 
+## [0.2.0] - 2026-06-13
+
+### Added
+
+- `git_diff_summary` typed tool — delegates `git diff` summarization to a subagent.
+- `git_log_summary` typed tool — delegates `git log` digest generation to a subagent.
+- `git_blame_summary` typed tool — delegates `git blame` contributor context to a subagent.
+- `/git-delegate:configure` and `/git-delegate:status` commands for settings help.
+- Removed template `skills/`, `prompts/`, and `themes/` resources to avoid Pi resource conflicts and invalid theme warnings.
+
 ## [0.1.2] - 2026-06-04
 
 ### Changed
