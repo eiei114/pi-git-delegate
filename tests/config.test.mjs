@@ -12,6 +12,39 @@ function writeProjectSettings(cwd, settings) {
   writeFileSync(join(dir, "settings.json"), JSON.stringify(settings), "utf8");
 }
 
+test("loadGitDelegateConfig reads diffModel shorthand for git_diff_summary routing", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  writeProjectSettings(cwd, {
+    "pi-git-delegate": {
+      diffModel: "haiku",
+    },
+  });
+
+  const config = loadGitDelegateConfig(cwd);
+  assert.deepEqual(config, {
+    diff: { provider: null, model: "haiku" },
+    log: { provider: null, model: null },
+    blame: { provider: null, model: null },
+  });
+  assert.deepEqual(resolveSubagentRoute("git_diff_summary", config), {
+    provider: undefined,
+    model: "haiku",
+  });
+});
+
+test("loadGitDelegateConfig prefers explicit diff route over diffModel shorthand", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  writeProjectSettings(cwd, {
+    "pi-git-delegate": {
+      diffModel: "haiku",
+      diff: { provider: "anthropic", model: "sonnet" },
+    },
+  });
+
+  const config = loadGitDelegateConfig(cwd);
+  assert.deepEqual(config?.diff, { provider: "anthropic", model: "sonnet" });
+});
+
 test("loadGitDelegateConfig reads nested provider/model routes", () => {
   const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
   writeProjectSettings(cwd, {
