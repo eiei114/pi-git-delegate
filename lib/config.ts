@@ -66,6 +66,21 @@ function parseRoute(value: unknown): ModelRoute {
   };
 }
 
+function parseRouteWithShorthand(routeValue: unknown, shorthandModel: unknown): ModelRoute {
+  const route = parseRoute(routeValue);
+  // Explicit nested route object should always take precedence over shorthand.
+  if (isRecord(routeValue)) {
+    return route;
+  }
+
+  const model = parseNullableString(shorthandModel);
+  if (model !== null) {
+    return { provider: null, model };
+  }
+
+  return route;
+}
+
 function readSettingsFile(filePath: string): Record<string, unknown> | undefined {
   if (!existsSync(filePath)) return undefined;
   try {
@@ -82,9 +97,9 @@ function parseGitDelegateConfig(settings: Record<string, unknown> | undefined): 
   if (!isRecord(raw)) return undefined;
 
   return {
-    diff: parseRoute(raw.diff),
-    log: parseRoute(raw.log),
-    blame: parseRoute(raw.blame),
+    diff: parseRouteWithShorthand(raw.diff, raw.diffModel),
+    log: parseRouteWithShorthand(raw.log, raw.logModel),
+    blame: parseRouteWithShorthand(raw.blame, raw.blameModel),
   };
 }
 
