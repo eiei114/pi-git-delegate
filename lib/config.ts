@@ -68,12 +68,13 @@ function parseRoute(value: unknown): ModelRoute {
 
 function parseRouteWithShorthand(routeValue: unknown, shorthandModel: unknown): ModelRoute {
   const route = parseRoute(routeValue);
-  if (route.provider !== null || route.model !== null) {
+  // Explicit nested route object should always take precedence over shorthand.
+  if (isRecord(routeValue)) {
     return route;
   }
 
   const model = parseNullableString(shorthandModel);
-  if (model) {
+  if (model !== null) {
     return { provider: null, model };
   }
 

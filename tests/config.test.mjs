@@ -45,6 +45,19 @@ test("loadGitDelegateConfig prefers explicit diff route over diffModel shorthand
   assert.deepEqual(config?.diff, { provider: "anthropic", model: "sonnet" });
 });
 
+test("loadGitDelegateConfig keeps explicit null diff route over diffModel shorthand", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  writeProjectSettings(cwd, {
+    "pi-git-delegate": {
+      diffModel: "haiku",
+      diff: { provider: null, model: null },
+    },
+  });
+
+  const config = loadGitDelegateConfig(cwd);
+  assert.deepEqual(config?.diff, { provider: null, model: null });
+});
+
 test("loadGitDelegateConfig reads nested provider/model routes", () => {
   const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
   writeProjectSettings(cwd, {
