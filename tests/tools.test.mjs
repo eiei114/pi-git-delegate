@@ -92,3 +92,25 @@ test("git_blame_summary returns contributor summary without raw blame", async ()
   assert.equal(result.content[0].text, "Delegated git summary.");
   assert.doesNotMatch(result.content[0].text, /^[0-9a-f]{7,40}/m);
 });
+
+test("git_blame_summary uses blameModel config and lets model parameter override it", async () => {
+  const cwd = createTempGitRepo();
+  mkdirSync(join(cwd, ".pi"), { recursive: true });
+  writeFileSync(
+    join(cwd, ".pi", "settings.json"),
+    JSON.stringify({
+      "pi-git-delegate": {
+        blameModel: "configured-blame-model",
+      },
+    }),
+    "utf8",
+  );
+  writeFileSync(join(cwd, "README.md"), "hello\n", "utf8");
+  commitAll(cwd, "initial");
+
+  const configured = await executeGitBlameSummary({ path: "README.md" }, { cwd });
+  assert.equal(configured.details.model, "configured-blame-model");
+
+  const overridden = await executeGitBlameSummary({ path: "README.md", model: "override-model" }, { cwd });
+  assert.equal(overridden.details.model, "override-model");
+});
