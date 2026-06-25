@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -10,11 +10,14 @@ const { executeGitLogSummary } = await import("../lib/tools/git-log-summary.ts")
 const { executeGitBlameSummary } = await import("../lib/tools/git-blame-summary.ts");
 const { createEchoSubagentRunner, setSubagentRunnerForTests } = await import("../lib/subagent-runner.ts");
 
+const tempRepos = [];
+
 function createTempGitRepo() {
   const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-git-"));
   execSync("git init", { cwd, stdio: "ignore" });
   execSync('git config user.email "test@example.com"', { cwd, stdio: "ignore" });
   execSync('git config user.name "Test User"', { cwd, stdio: "ignore" });
+  tempRepos.push(cwd);
   return cwd;
 }
 
@@ -29,6 +32,9 @@ test.before(() => {
 
 test.after(() => {
   setSubagentRunnerForTests(undefined);
+  for (const cwd of tempRepos.splice(0)) {
+    rmSync(cwd, { recursive: true, force: true });
+  }
 });
 
 test("git_diff_summary returns empty message without subagent when diff is empty", async () => {
@@ -91,4 +97,26 @@ test("git_blame_summary returns contributor summary without raw blame", async ()
   const result = await executeGitBlameSummary({ path: "src/index.ts" }, { cwd });
   assert.equal(result.content[0].text, "Delegated git summary.");
   assert.doesNotMatch(result.content[0].text, /^[0-9a-f]{7,40}/m);
+});
+
+test("git_blame_summary uses blameModel config and lets model parameter override it", async () => {
+  const cwd = createTempGitRepo();
+  mkdirSync(join(cwd, ".pi"), { recursive: true });
+  writeFileSync(
+    join(cwd, ".pi", "settings.json"),
+    JSON.stringify({
+      "pi-git-delegate": {
+        blameModel: "configured-blame-model",
+      },
+    }),
+    "utf8",
+  );
+  writeFileSync(join(cwd, "README.md"), "hello\n", "utf8");
+  commitAll(cwd, "initial");
+
+  const configured = await executeGitBlameSummary({ path: "README.md" }, { cwd });
+  assert.equal(configured.details.model, "configured-blame-model");
+
+  const overridden = await executeGitBlameSummary({ path: "README.md", model: "override-model" }, { cwd });
+  assert.equal(overridden.details.model, "override-model");
 });
