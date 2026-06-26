@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project follows semantic versioning.
 
+## [0.2.1] - 2026-06-27
+
+### Changed
+
+- README: add canonical `Quick start` section after `Install`, aligned with the Pi OSS extension template.
+- README: preserve delegation guidance, configuration, and tool examples under `When to delegate`, `Configuration`, and `Tool examples`.
+
 ## [0.2.0] - 2026-06-13
 
 ### Added
