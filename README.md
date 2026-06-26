@@ -55,13 +55,21 @@ Try without installing:
 pi -e .
 ```
 
-## Usage
+## Quick start
 
-Once installed, the tools are available automatically. Pi calls them via `pi list`.
+After installing (see above) or running `pi -e .` from this repo, call each tool in Pi:
 
-### Configure model per tool (optional)
+```txt
+git_diff_summary({ref: "HEAD~3"})
+git_log_summary({range: "main..feature"})
+git_blame_summary({path: "src/auth.ts"})
+```
 
-Run in Pi:
+The tools are registered automatically — no extra setup required.
+
+## Configuration
+
+Model routing is optional. Run in Pi:
 
 ```txt
 /git-delegate:configure
@@ -89,7 +97,9 @@ Manual example for `.pi/settings.json`:
 
 `null` means "use the current session provider/model".
 
-### Call a tool
+## Tool examples
+
+Once installed, the tools are available automatically. Pi calls them via `pi list`.
 
 ```txt
 git_diff_summary({ref: "HEAD~3"})
@@ -149,4 +159,4 @@ For vulnerability reporting, see [`SECURITY.md`](SECURITY.md).
 
 ## License
 
-MIT\n
+MIT
