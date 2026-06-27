@@ -58,6 +58,38 @@ test("loadGitDelegateConfig keeps explicit null diff route over diffModel shorth
   assert.deepEqual(config?.diff, { provider: null, model: null });
 });
 
+test("loadGitDelegateConfig reads logModel shorthand for git_log_summary routing", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  writeProjectSettings(cwd, {
+    "pi-git-delegate": {
+      logModel: "gpt-4.1-mini",
+    },
+  });
+
+  const config = loadGitDelegateConfig(cwd);
+  assert.deepEqual(config?.log, { provider: null, model: "gpt-4.1-mini" });
+  assert.deepEqual(resolveSubagentRoute("git_log_summary", config), {
+    provider: undefined,
+    model: "gpt-4.1-mini",
+  });
+});
+
+test("loadGitDelegateConfig reads blameModel shorthand for git_blame_summary routing", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  writeProjectSettings(cwd, {
+    "pi-git-delegate": {
+      blameModel: "gemini-2.5-flash",
+    },
+  });
+
+  const config = loadGitDelegateConfig(cwd);
+  assert.deepEqual(config?.blame, { provider: null, model: "gemini-2.5-flash" });
+  assert.deepEqual(resolveSubagentRoute("git_blame_summary", config), {
+    provider: undefined,
+    model: "gemini-2.5-flash",
+  });
+});
+
 test("loadGitDelegateConfig reads nested provider/model routes", () => {
   const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
   writeProjectSettings(cwd, {

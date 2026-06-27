@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 This project follows semantic versioning.
 
+## [Unreleased]
+
+### Added
+
+- Config smoke tests for `logModel` and `blameModel` shorthand routing.
+- Integration test for empty `git_blame_summary` output.
+- CI workflow smoke test verifying `npm run ci` runs on push/PR.
+
+### Removed
+
+- `docs/template-checklist.md` — template bootstrap doc no longer needed after package setup.
+
 ## [0.2.1] - 2026-06-27
 
 ### Changed

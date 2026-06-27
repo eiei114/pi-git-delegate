@@ -76,6 +76,16 @@ test("git_log_summary returns digest without raw log in response", async () => {
   assert.doesNotMatch(result.content[0].text, /feat: one/);
 });
 
+test("git_blame_summary returns empty message without subagent when blame output is empty", async () => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "empty.txt"), "", "utf8");
+  commitAll(cwd, "add empty file");
+
+  const result = await executeGitBlameSummary({ path: "empty.txt" }, { cwd });
+  assert.equal(result.content[0].text, "No blame data found for empty.txt.");
+  assert.equal(result.details.empty, true);
+});
+
 test("git_blame_summary returns error for missing file without subagent", async () => {
   const cwd = createTempGitRepo();
   writeFileSync(join(cwd, "README.md"), "hello\n", "utf8");
