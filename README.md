@@ -6,6 +6,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/pi-git-delegate.svg)](https://www.npmjs.com/package/pi-git-delegate)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Pi package](https://img.shields.io/badge/pi-package-purple.svg)](https://pi.dev/packages)
+[![Trusted Publishing](https://img.shields.io/badge/npm-Trusted%20Publishing-blue.svg)](docs/release.md)
 
 > Delegate git operations (diff/log/blame) to cheaper models via subagents — keeping parent context clean and cutting costs.
 
