@@ -6,6 +6,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/pi-git-delegate.svg)](https://www.npmjs.com/package/pi-git-delegate)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Pi package](https://img.shields.io/badge/pi-package-purple.svg)](https://pi.dev/packages)
+<a href="https://buymeacoffee.com/ekawano114m"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="217" height="60"></a>
 
 > Delegate git operations (diff/log/blame) to cheaper models via subagents — keeping parent context clean and cutting costs.
 
