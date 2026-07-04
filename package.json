@@ -1,6 +1,6 @@
 {
   "name": "pi-git-delegate",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Pi extension: delegate git operations (diff/log/blame) to cheaper models via subagents, saving costs and keeping parent context clean.",
   "type": "module",
   "license": "MIT",
