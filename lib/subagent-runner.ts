@@ -25,7 +25,7 @@ export function setSubagentRunnerForTests(runner: SubagentRunner | undefined): v
   runnerOverride = runner;
 }
 
-function getPiInvocation(args: string[]): { command: string; args: string[] } {
+export function getPiInvocation(args: string[]): { command: string; args: string[] } {
   const currentScript = process.argv[1];
   const isBunVirtualScript = currentScript?.startsWith("/$bunfs/root/");
   if (currentScript && !isBunVirtualScript && fs.existsSync(currentScript)) {
@@ -41,7 +41,7 @@ function getPiInvocation(args: string[]): { command: string; args: string[] } {
   return { command: "pi", args };
 }
 
-function getFinalOutput(messages: Message[]): string {
+export function getFinalOutput(messages: Message[]): string {
   const assistantTexts = messages
     .filter((message): message is Extract<Message, { role: "assistant" }> => message.role === "assistant")
     .flatMap((message) =>
