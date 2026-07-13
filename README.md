@@ -146,6 +146,7 @@ See [`docs/release.md`](docs/release.md) for setup details.
 
 - [`docs/examples.md`](docs/examples.md) — tool usage examples
 - [`docs/release.md`](docs/release.md) — Trusted Publishing details (README Release summarizes the flow)
+- [`ROADMAP.md`](ROADMAP.md) — maintenance direction and bounded seed candidates
 
 ## Security
 
