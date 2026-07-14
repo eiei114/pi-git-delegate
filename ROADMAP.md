@@ -119,17 +119,21 @@ section; its entry is stranded under `[Unreleased]`.
 
 ---
 
-### Seed 3 — Triage/close stale dependabot branches
+### Seed 3 — Close the stale `actions/checkout` dependabot branch
 
 `~30 min` · dependencies / ci
 
-Close or land lingering dependabot branches (e.g. `actions/checkout` bump)
-that are already satisfied by the current workflow pins.
+The `dependabot/github_actions/actions/checkout-7` branch is already
+satisfied: every workflow references `actions/checkout@v7`. Confirm, then
+delete the stale branch (or close any associated PR with a reason). **One
+branch per seed** — any additional stale dependabot branch becomes its own
+follow-up seed so this stays a single 30-minute maintenance unit.
 
 **Acceptance criteria**
 
-- [ ] Each open dependabot PR/branch is either merged or closed with a reason
-- [ ] `.github/dependabot.yml` groups/limits still match intent
+- [ ] Confirmed all workflows already pin `actions/checkout@v7` or higher
+- [ ] The `actions/checkout` dependabot branch is deleted, or its PR closed
+      with a reason
 - [ ] No workflow references a non-existent action version
 
 ---
