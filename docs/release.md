@@ -26,6 +26,10 @@ Publishing also runs when a GitHub Release is published, and can be run manually
 
 The workflow skips `name@version` if that exact package version already exists on npm.
 
+## Incident log
+
+- 2026-07-04 — `publish.yml` run [28704535034](incidents/2026-07-04-failed-npm-publish.md) failed with `cannot publish over the previously published versions: 0.2.2`. Cause: duplicate-version race from the concurrent push-to-main and `auto-release` dispatch triggers. No release/registry change was needed; `0.2.2` was already public. Correction options are listed in the report.
+
 ## Workflow guardrail
 
 Do not ship a new Pi OSS package or version bump with only `package.json` changes.
