@@ -10,6 +10,7 @@ This project follows semantic versioning.
 
 ### Added
 
+- `ROADMAP.md` — maintenance direction, current release status, and bounded (30–90 min) candidate maintenance seeds.
 - Config smoke tests for `logModel` and `blameModel` shorthand routing.
 - Integration test for empty `git_blame_summary` output.
 - CI workflow smoke test verifying `npm run ci` runs on push/PR.
