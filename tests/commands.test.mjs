@@ -26,6 +26,9 @@ test("buildConfigureHelp includes provider/model descriptions and example JSON",
   const help = buildConfigureHelp(cwd, DEFAULT_GIT_DELEGATE_CONFIG);
   assert.match(help, /provider/);
   assert.match(help, /model/);
+  assert.match(help, /diffModel/);
+  assert.match(help, /logModel/);
+  assert.match(help, /blameModel/);
   assert.match(help, /git-delegate:configure/);
   assert.match(help, /"pi-git-delegate"/);
 });

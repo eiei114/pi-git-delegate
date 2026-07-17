@@ -47,4 +47,16 @@ Manual example for `.pi/settings.json`:
 }
 ```
 
+Model-only shorthand is also supported (uses the session provider):
+
+```json
+{
+  "pi-git-delegate": {
+    "diffModel": "claude-3-5-haiku-latest",
+    "logModel": "gpt-4.1-mini",
+    "blameModel": "gemini-2.5-flash"
+  }
+}
+```
+
 `null` uses the current session provider/model.
