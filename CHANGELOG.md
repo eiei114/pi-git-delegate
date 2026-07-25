@@ -6,22 +6,28 @@ This project follows semantic versioning.
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-07-21
+
 ### Changed
 
-- Bump package version to `0.2.3` for the next patch release.
-
-- Add Buy Me a Coffee sponsor button to README and native GitHub funding link via `.github/FUNDING.yml`.
+- Pin `@earendil-works/*` devDependencies to `^0.80.6` for reproducible CI.
+- CI workflow aligns with the Pi extension template (`oven-sh/setup-bun@v2` before `npm ci`).
+- Document `diffModel` / `logModel` / `blameModel` shorthand in configure help and `docs/examples.md`.
 
 ### Added
 
 - `ROADMAP.md` — maintenance direction, current release status, and bounded (30–90 min) candidate maintenance seeds.
+- Unit tests for `git-exec`, `prompts`, and `subagent-runner` helpers.
 - Config smoke tests for `logModel` and `blameModel` shorthand routing.
 - Integration test for empty `git_blame_summary` output.
 - CI workflow smoke test verifying `npm run ci` runs on push/PR.
+- `docs/incidents/2026-07-04-failed-npm-publish.md` — postmortem for a failed Trusted Publishing run.
 
-### Removed
+## [0.2.2] - 2026-07-04
 
-- `docs/template-checklist.md` — template bootstrap doc no longer needed after package setup.
+### Changed
+
+- Add Buy Me a Coffee sponsor button to README and native GitHub funding link via `.github/FUNDING.yml`.
 
 ## [0.2.1] - 2026-06-27
 
