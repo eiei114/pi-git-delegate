@@ -31,30 +31,28 @@ unless they directly serve the cost/context-leverage thesis.
 
 | Item | Value |
 |---|---|
-| Latest release | **v0.2.2** (npm `0.2.2`, published 2026-07-04) |
-| `package.json` version | `0.2.2` (in sync with npm) |
+| Latest release | **v0.2.3** (npm `0.2.3`, published 2026-07-21) |
+| `package.json` version | `0.2.3` (in sync with npm) |
 | Release model | npm Trusted Publishing via GitHub Actions; auto-release on `package.json` version bump |
 | CI | `npm run ci` = `typecheck` + `node --test` + `pack:check` |
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
-| Open PRs | dependency bumps (dependabot + devDep pinning) |
+| Open PRs | dependabot typebox bump (#35) |
 
-v0.2.2 shipped the sponsor/funding rollout. The next release (0.2.3 / 0.3.0)
-will roll up the unreleased test-coverage additions and any maintenance seeds
-landed below.
+v0.2.3 shipped the devDependency pin, CI template alignment, expanded test
+coverage, and CHANGELOG hygiene. The next release will roll up any remaining
+maintenance seeds landed below.
 
 ## Short-term goals (next 2–3 releases)
 
-1. **Stabilize dependencies.** Land a single coherent devDependency pin so CI
-   is reproducible and dependabot stops racing the manual pin PR.
-2. **Close the CHANGELOG gap.** Backfill the missing `0.2.2` section and keep
-   `[Unreleased]` honest so releases have accurate notes.
-3. **Harden test coverage around the config/override paths** that are the most
+1. **Harden test coverage around the config/override paths** that are the most
    user-facing behavior (model routing + per-call override).
-4. **Keep docs minimal and accurate** — README + `docs/` + this roadmap stay in
+2. **Keep docs minimal and accurate** — README + `docs/` + this roadmap stay in
    sync; no fixed six-file doc set.
-5. **Roadmap-driven seeding** — each week, promote one bounded seed below into
+3. **Roadmap-driven seeding** — each week, promote one bounded seed below into
    a tracked issue and PR.
+4. **Triage stale dependabot branches** — close or delete branches whose bumps
+   are already satisfied by current workflow pins.
 
 No breaking changes are planned. Anything that changes tool names, settings
 keys, or command names is a minor (`0.x.0`) bump and must be called out in the
@@ -62,10 +60,6 @@ PR and CHANGELOG.
 
 ## Known technical debt
 
-- **devDependency pin race.** Manual pin PR (DOT-850) and a dependabot group PR
-  both touch `@earendil-works/*`; they conflict and one must win.
-- **CHANGELOG hygiene.** The `0.2.2` release has no dedicated section; its
-  sponsor item is stranded under `[Unreleased]`.
 - **Dependabot branch drift.** A `github-actions` dependabot branch for
   `actions/checkout` lingers though workflows already reference `@v7`; needs
   triage/closure.
@@ -83,39 +77,6 @@ when scheduling it, then check it off here once the PR merges. Keep the
 "Acceptance criteria" verbatim when promoting so the issue is self-contained.
 
 Legend: `~time` = estimated focused effort; all targets are ≤ 90 min.
-
----
-
-### Seed 1 — Resolve devDependency pin conflict (DOT-850 vs dependabot)
-
-`~45 min` · dependencies
-
-Merge one canonical devDependency update so `@earendil-works/*` is pinned to a
-real range (not `latest`) and the lockfile is regenerated, then close the
-superseded PR.
-
-**Acceptance criteria**
-
-- [ ] `package.json` has no `latest` for `@earendil-works/*` devDependencies
-- [ ] `package-lock.json` regenerated and committed
-- [ ] `npm run ci` passes
-- [ ] The losing PR (dependabot group or DOT-850) is closed with a comment
-      pointing at the winner
-
----
-
-### Seed 2 — Backfill CHANGELOG `[0.2.2]` and clean `[Unreleased]`
-
-`~30 min` · docs
-
-The `0.2.2` release shipped the sponsor/funding rollout but has no CHANGELOG
-section; its entry is stranded under `[Unreleased]`.
-
-**Acceptance criteria**
-
-- [ ] New `## [0.2.2] - 2026-07-04` section documents the sponsor/funding change
-- [ ] `[Unreleased]` keeps only genuinely unreleased items (test additions)
-- [ ] No behavior/code change in the PR
 
 ---
 
@@ -184,6 +145,13 @@ wired into `npm run ci` so style drift is caught automatically.
 - [ ] Existing files formatted in the same PR (no behavior change)
 
 ---
+
+## Completed maintenance seeds
+
+- **Seed 1 — Resolve devDependency pin conflict** — landed in PR #34 (DOT-1229);
+  `@earendil-works/*` pinned to `^0.80.6`, superseded dependabot PR closed.
+- **Seed 2 — Backfill CHANGELOG `[0.2.2]` and clean `[Unreleased]`** — landed
+  in PR #33 (DOT-1168); `[Unreleased]` is empty on `0.2.3`.
 
 ## How to update this roadmap
 

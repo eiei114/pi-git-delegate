@@ -4,6 +4,7 @@ import test from "node:test";
 
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 const changelog = await readFile(new URL("../CHANGELOG.md", import.meta.url), "utf8");
+const roadmap = await readFile(new URL("../ROADMAP.md", import.meta.url), "utf8");
 const ciWorkflow = await readFile(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
 const autoReleaseWorkflow = await readFile(new URL("../.github/workflows/auto-release.yml", import.meta.url), "utf8");
 const publishWorkflow = await readFile(new URL("../.github/workflows/publish.yml", import.meta.url), "utf8");
@@ -27,6 +28,12 @@ test("ci workflow runs tests on push and pull_request", () => {
   assert.match(ciWorkflow, /on:\s*[\s\S]*push:/);
   assert.match(ciWorkflow, /pull_request:/);
   assert.match(ciWorkflow, /npm run ci/);
+});
+
+test("roadmap release status tracks package version", () => {
+  const version = packageJson.version;
+  assert.match(roadmap, new RegExp(`Latest release \\| \\*\\*v${version.replace(/\./g, "\\.")}\\*\\*`));
+  assert.match(roadmap, new RegExp(`\`package.json\` version \\| \`${version}\``));
 });
 
 test("changelog documents shipped releases and keeps Unreleased empty", () => {
