@@ -32,8 +32,8 @@ test("ci workflow runs tests on push and pull_request", () => {
 
 test("roadmap release status tracks package version", () => {
   const version = packageJson.version;
-  assert.match(roadmap, new RegExp(`Latest release \\| \\*\\*v${version.replace(/\./g, "\\.")}\\*\\*`));
-  assert.match(roadmap, new RegExp(`\`package.json\` version \\| \`${version}\``));
+  assert.ok(roadmap.includes(`| Latest release | **v${version}**`));
+  assert.ok(roadmap.includes(`| \`package.json\` version | \`${version}\``));
 });
 
 test("changelog documents shipped releases and keeps Unreleased empty", () => {

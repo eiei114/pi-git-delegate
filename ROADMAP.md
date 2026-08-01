@@ -41,7 +41,7 @@ unless they directly serve the cost/context-leverage thesis.
 
 v0.2.3 shipped the devDependency pin, CI template alignment, expanded test
 coverage, and CHANGELOG hygiene. The next release will roll up any remaining
-maintenance seeds landed below.
+maintenance seeds listed below.
 
 ## Short-term goals (next 2–3 releases)
 
