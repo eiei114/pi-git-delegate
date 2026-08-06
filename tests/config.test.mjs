@@ -173,12 +173,15 @@ test("loadGitDelegateConfig prefers project settings over agent-dir settings", (
   writeAgentSettings(agentDir, {
     "pi-git-delegate": {
       diffModel: "agent-diff-model",
+      logModel: "agent-log-model",
     },
   });
 
   withAgentDir(agentDir, () => {
     const config = loadGitDelegateConfig(cwd);
     assert.deepEqual(config?.diff, { provider: null, model: "project-diff-model" });
+    assert.notEqual(config?.log?.model, "agent-log-model");
+    assert.deepEqual(config?.log, { provider: null, model: null });
   });
 });
 
