@@ -12,6 +12,25 @@ function writeProjectSettings(cwd, settings) {
   writeFileSync(join(dir, "settings.json"), JSON.stringify(settings), "utf8");
 }
 
+function writeAgentSettings(agentDir, settings) {
+  mkdirSync(agentDir, { recursive: true });
+  writeFileSync(join(agentDir, "settings.json"), JSON.stringify(settings), "utf8");
+}
+
+function withAgentDir(agentDir, run) {
+  const previous = process.env.PI_CODING_AGENT_DIR;
+  process.env.PI_CODING_AGENT_DIR = agentDir;
+  try {
+    return run();
+  } finally {
+    if (previous === undefined) {
+      delete process.env.PI_CODING_AGENT_DIR;
+    } else {
+      process.env.PI_CODING_AGENT_DIR = previous;
+    }
+  }
+}
+
 test("loadGitDelegateConfig reads diffModel shorthand for git_diff_summary routing", () => {
   const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
   writeProjectSettings(cwd, {
@@ -141,6 +160,80 @@ test("resolveSubagentRoute prefers parameter override over config", () => {
       model: "override-model",
     },
   );
+});
+
+test("loadGitDelegateConfig prefers project settings over agent-dir settings", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  const agentDir = mkdtempSync(join(tmpdir(), "pi-git-delegate-agent-"));
+  writeProjectSettings(cwd, {
+    "pi-git-delegate": {
+      diffModel: "project-diff-model",
+    },
+  });
+  writeAgentSettings(agentDir, {
+    "pi-git-delegate": {
+      diffModel: "agent-diff-model",
+    },
+  });
+
+  withAgentDir(agentDir, () => {
+    const config = loadGitDelegateConfig(cwd);
+    assert.deepEqual(config?.diff, { provider: null, model: "project-diff-model" });
+  });
+});
+
+test("loadGitDelegateConfig falls back to agent-dir settings when project settings are missing", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  const agentDir = mkdtempSync(join(tmpdir(), "pi-git-delegate-agent-"));
+  writeAgentSettings(agentDir, {
+    "pi-git-delegate": {
+      logModel: "agent-log-model",
+    },
+  });
+
+  withAgentDir(agentDir, () => {
+    const config = loadGitDelegateConfig(cwd);
+    assert.deepEqual(config?.log, { provider: null, model: "agent-log-model" });
+  });
+});
+
+test("loadGitDelegateConfig returns undefined when neither project nor agent settings exist", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  const agentDir = mkdtempSync(join(tmpdir(), "pi-git-delegate-agent-"));
+  mkdirSync(agentDir, { recursive: true });
+
+  withAgentDir(agentDir, () => {
+    assert.equal(loadGitDelegateConfig(cwd), undefined);
+  });
+});
+
+test("loadGitDelegateConfig ignores invalid project JSON and falls back to agent settings", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  const agentDir = mkdtempSync(join(tmpdir(), "pi-git-delegate-agent-"));
+  const projectDir = join(cwd, ".pi");
+  mkdirSync(projectDir, { recursive: true });
+  writeFileSync(join(projectDir, "settings.json"), "{not-json", "utf8");
+  writeAgentSettings(agentDir, {
+    "pi-git-delegate": {
+      blameModel: "agent-blame-model",
+    },
+  });
+
+  withAgentDir(agentDir, () => {
+    const config = loadGitDelegateConfig(cwd);
+    assert.deepEqual(config?.blame, { provider: null, model: "agent-blame-model" });
+  });
+});
+
+test("loadGitDelegateConfig ignores invalid agent JSON when project settings are missing", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  const agentDir = mkdtempSync(join(tmpdir(), "pi-git-delegate-agent-"));
+  mkdirSync(agentDir, { recursive: true });
+  writeFileSync(join(agentDir, "settings.json"), "{broken", "utf8");
+
+  withAgentDir(agentDir, () => {
+    assert.equal(loadGitDelegateConfig(cwd), undefined);
+  });
 });
 
 test("resolveSubagentRoute returns undefined when neither config nor override is set", () => {
