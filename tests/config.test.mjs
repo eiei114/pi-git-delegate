@@ -162,6 +162,46 @@ test("resolveSubagentRoute prefers parameter override over config", () => {
   );
 });
 
+test("resolveSubagentRoute uses only model override when provider is absent", () => {
+  const config = {
+    diff: { provider: "anthropic", model: "haiku" },
+    log: { provider: "openai", model: "gpt-4.1-mini" },
+    blame: { provider: "google", model: "gemini-2.5-flash" },
+  };
+  assert.deepEqual(
+    resolveSubagentRoute("git_diff_summary", config, { model: "override-only-model" }),
+    { provider: undefined, model: "override-only-model" },
+  );
+});
+
+test("resolveSubagentRoute uses only provider override when model is absent", () => {
+  const config = {
+    diff: { provider: "anthropic", model: "haiku" },
+    log: { provider: "openai", model: "gpt-4.1-mini" },
+    blame: { provider: "google", model: "gemini-2.5-flash" },
+  };
+  assert.deepEqual(
+    resolveSubagentRoute("git_log_summary", config, { provider: "override-only-provider" }),
+    { provider: "override-only-provider", model: undefined },
+  );
+});
+
+test("resolveSubagentRoute falls back to config when override fields are empty or whitespace", () => {
+  const config = {
+    diff: { provider: "anthropic", model: "haiku" },
+    log: { provider: "openai", model: "gpt-4.1-mini" },
+    blame: { provider: "google", model: "gemini-2.5-flash" },
+  };
+  assert.deepEqual(
+    resolveSubagentRoute("git_diff_summary", config, { provider: "  ", model: "" }),
+    { provider: "anthropic", model: "haiku" },
+  );
+  assert.deepEqual(
+    resolveSubagentRoute("git_blame_summary", config, { model: "  " }),
+    { provider: "google", model: "gemini-2.5-flash" },
+  );
+});
+
 test("loadGitDelegateConfig prefers project settings over agent-dir settings", () => {
   const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
   const agentDir = mkdtempSync(join(tmpdir(), "pi-git-delegate-agent-"));

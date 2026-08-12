@@ -31,17 +31,18 @@ unless they directly serve the cost/context-leverage thesis.
 
 | Item | Value |
 |---|---|
-| Latest release | **v0.2.4** (npm `0.2.4`, published 2026-07-21) |
+| Latest release | **v0.2.4** (npm `0.2.4`, published 2026-08-04) |
 | `package.json` version | `0.2.4` (in sync with npm) |
 | Release model | npm Trusted Publishing via GitHub Actions; auto-release on `package.json` version bump |
 | CI | `npm run ci` = `typecheck` + `node --test` + `pack:check` |
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
-| Open PRs | dependabot typebox bump (#35) |
+| Open PRs | dependabot dev bumps (#42, #43) |
 
-v0.2.3 shipped the devDependency pin, CI template alignment, expanded test
-coverage, and CHANGELOG hygiene. The next release will roll up any remaining
-maintenance seeds listed below.
+v0.2.4 shipped the Discord release webhook verification bump. v0.2.3 added the
+devDependency pin, CI template alignment, expanded test coverage, and CHANGELOG
+hygiene. The next release will roll up any remaining maintenance seeds listed
+below.
 
 ## Short-term goals (next 2–3 releases)
 
@@ -63,10 +64,6 @@ PR and CHANGELOG.
 - **Dependabot branch drift.** A `github-actions` dependabot branch for
   `actions/checkout` lingers though workflows already reference `@v7`; needs
   triage/closure.
-- **Override-path test gap.** The per-call `provider`/`model` override
-  parameter is unit-tested indirectly but has no focused integration test.
-- **Config-precedence test gap.** Project `.pi/settings.json` vs agent-dir
-  precedence is implemented but not asserted by an explicit fixture.
 - **No formatter/linter.** No Prettier/ESLint config; style is enforced only by
   `tsc --noEmit` and review.
 
@@ -99,38 +96,6 @@ follow-up seed so this stays a single 30-minute maintenance unit.
 
 ---
 
-### Seed 4 — Focused test for per-call model override
-
-`~60 min` · tests
-
-Add a focused test asserting that the `provider`/`model` tool parameters
-override config routing and that override takes precedence over file config.
-
-**Acceptance criteria**
-
-- [ ] New test covers: override wins over config; override with only `model`;
-      override with only `provider`; empty/whitespace override falls back
-- [ ] `npm run ci` passes
-- [ ] No production code change unless a real bug is found (then split it out)
-
----
-
-### Seed 5 — Config-precedence fixture test (project vs agent dir)
-
-`~60 min` · tests
-
-Add a fixture-based test asserting project `.pi/settings.json` wins over the
-agent-dir settings, and that malformed JSON is ignored gracefully.
-
-**Acceptance criteria**
-
-- [ ] Test uses temp dirs for both project and agent settings
-- [ ] Asserts: project config wins; missing files → defaults; invalid JSON →
-      ignored (no throw)
-- [ ] `npm run ci` passes
-
----
-
 ### Seed 6 — Add minimal Prettier config + format check
 
 `~45 min` · tooling
@@ -152,6 +117,11 @@ wired into `npm run ci` so style drift is caught automatically.
   `@earendil-works/*` pinned to `^0.80.6`, superseded dependabot PR closed.
 - **Seed 2 — Backfill CHANGELOG `[0.2.2]` and clean `[Unreleased]`** — landed
   in PR #33 (DOT-1168); `[Unreleased]` is empty on `0.2.3`.
+- **Seed 4 — Focused test for per-call model override** — landed in PR for
+  DOT-1484; partial override and whitespace fallback paths covered in
+  `tests/config.test.mjs`.
+- **Seed 5 — Config-precedence fixture test** — landed in PR #39 (DOT-1374);
+  project vs agent-dir precedence and invalid JSON fallback covered.
 
 ## How to update this roadmap
 
