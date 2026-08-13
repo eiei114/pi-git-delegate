@@ -38,9 +38,10 @@ test("roadmap release status tracks package version", () => {
 
 test("changelog documents shipped releases and keeps Unreleased empty", () => {
   const version = packageJson.version;
-  assert.match(changelog, /## \[Unreleased\][\s\S]*?## \[0\.2\.3\] - 2026-07-21/);
+  const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  assert.match(changelog, new RegExp(`## \\[Unreleased\\]\\s*\\n\\s*## \\[${escapedVersion}\\]`));
   assert.match(changelog, /## \[0\.2\.2\] - 2026-07-04[\s\S]*?Buy Me a Coffee[\s\S]*?(?=## \[|$)/);
-  assert.match(changelog, new RegExp(`## \\[${version.replace(/\./g, "\\.")}\\]`));
+  assert.match(changelog, new RegExp(`## \\[${escapedVersion}\\]`));
   const unreleasedBody = changelog.split("## [Unreleased]")[1]?.split(/^## \[/m)[0] ?? "";
   assert.match(unreleasedBody.trim(), /^$/);
 });
