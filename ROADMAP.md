@@ -101,9 +101,8 @@ wired into `npm run ci` so style drift is caught automatically.
 - **Seed 5 — Config-precedence fixture test** — landed in PR #39 (DOT-1374);
   project vs agent-dir precedence and invalid JSON fallback covered.
 - **Seed 3 — Close the stale `actions/checkout` dependabot branch** — verified
-  in DOT-1540; all workflows pin `actions/checkout@v7`, PR #6 merged
-  2026-06-24, and `dependabot/github_actions/actions/checkout-7` is absent from
-  the remote.
+  in DOT-1540; all workflows pin `actions/checkout@v7`, and dependabot PR #6
+  merged 2026-06-24.
 
 ## How to update this roadmap
 
