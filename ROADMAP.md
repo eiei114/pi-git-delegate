@@ -61,9 +61,6 @@ PR and CHANGELOG.
 
 ## Known technical debt
 
-- **Dependabot branch drift.** A `github-actions` dependabot branch for
-  `actions/checkout` lingers though workflows already reference `@v7`; needs
-  triage/closure.
 - **No formatter/linter.** No Prettier/ESLint config; style is enforced only by
   `tsc --noEmit` and review.
 
@@ -74,25 +71,6 @@ when scheduling it, then check it off here once the PR merges. Keep the
 "Acceptance criteria" verbatim when promoting so the issue is self-contained.
 
 Legend: `~time` = estimated focused effort; all targets are ≤ 90 min.
-
----
-
-### Seed 3 — Close the stale `actions/checkout` dependabot branch
-
-`~30 min` · dependencies / ci
-
-The `dependabot/github_actions/actions/checkout-7` branch is already
-satisfied: every workflow references `actions/checkout@v7`. Confirm, then
-delete the stale branch (or close any associated PR with a reason). **One
-branch per seed** — any additional stale dependabot branch becomes its own
-follow-up seed so this stays a single 30-minute maintenance unit.
-
-**Acceptance criteria**
-
-- [ ] Confirmed all workflows already pin `actions/checkout@v7` or higher
-- [ ] The `actions/checkout` dependabot branch is deleted, or its PR closed
-      with a reason
-- [ ] No workflow references a non-existent action version
 
 ---
 
@@ -122,6 +100,10 @@ wired into `npm run ci` so style drift is caught automatically.
   `tests/config.test.mjs`.
 - **Seed 5 — Config-precedence fixture test** — landed in PR #39 (DOT-1374);
   project vs agent-dir precedence and invalid JSON fallback covered.
+- **Seed 3 — Close the stale `actions/checkout` dependabot branch** — verified
+  in DOT-1540; all workflows pin `actions/checkout@v7`, PR #6 merged
+  2026-06-24, and `dependabot/github_actions/actions/checkout-7` is absent from
+  the remote.
 
 ## How to update this roadmap
 
