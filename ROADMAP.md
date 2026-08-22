@@ -31,8 +31,8 @@ unless they directly serve the cost/context-leverage thesis.
 
 | Item | Value |
 |---|---|
-| Latest release | **v0.2.4** (npm `0.2.4`, published 2026-08-04) |
-| `package.json` version | `0.2.4` (in sync with npm) |
+| Latest release | **v0.2.5** (npm `0.2.5`, published 2026-08-22) |
+| `package.json` version | `0.2.5` (in sync with npm) |
 | Release model | npm Trusted Publishing via GitHub Actions; auto-release on `package.json` version bump |
 | CI | `npm run ci` = `typecheck` + `node --test` + `pack:check` |
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
