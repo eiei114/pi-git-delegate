@@ -37,7 +37,7 @@ unless they directly serve the cost/context-leverage thesis.
 | CI | `npm run ci` = `typecheck` + `node --test` + `pack:check` |
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
-| Open PRs | dependabot dev bumps (#42, #43) |
+| Open PRs | dependabot dev bumps (see GitHub PR list; do not hardcode numbers here) |
 
 v0.2.4 shipped the Discord release webhook verification bump. v0.2.3 added the
 devDependency pin, CI template alignment, expanded test coverage, and CHANGELOG
