@@ -36,6 +36,17 @@ test("roadmap release status tracks package version", () => {
   assert.ok(roadmap.includes(`| \`package.json\` version | \`${version}\``));
 });
 
+test("roadmap open PRs row avoids stale hardcoded PR numbers", () => {
+  const match = roadmap.match(/\| Open PRs \|([^|]+)\|/);
+  assert.ok(match, "Open PRs row missing from ROADMAP.md");
+  const cell = match[1].trim();
+  assert.doesNotMatch(
+    cell,
+    /#\d+/,
+    "Open PRs cell must not hardcode PR numbers that go stale after merge",
+  );
+});
+
 test("changelog documents shipped releases and keeps Unreleased empty", () => {
   const version = packageJson.version;
   const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
