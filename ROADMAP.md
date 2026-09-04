@@ -38,11 +38,13 @@ unless they directly serve the cost/context-leverage thesis.
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
 | Open PRs | dependabot dev bumps (see GitHub PR list; do not hardcode numbers here) |
+| Last roadmap refresh | 2026-09-05 (DOT-999) |
 
-v0.2.4 shipped the Discord release webhook verification bump. v0.2.3 added the
-devDependency pin, CI template alignment, expanded test coverage, and CHANGELOG
-hygiene. The next release will roll up any remaining maintenance seeds listed
-below.
+v0.2.5 rolled up the 2026-08-22 managed OSS dependency and maintenance PR
+batch. v0.2.4 shipped the Discord release webhook verification bump. v0.2.3
+added the devDependency pin, CI template alignment, expanded test coverage,
+and CHANGELOG hygiene. The next release will roll up any remaining maintenance
+seeds listed below.
 
 ## Short-term goals (next 2–3 releases)
 
@@ -52,8 +54,11 @@ below.
    sync; no fixed six-file doc set.
 3. **Roadmap-driven seeding** — each week, promote one bounded seed below into
    a tracked issue and PR.
-4. **Triage stale dependabot branches** — close or delete branches whose bumps
-   are already satisfied by current workflow pins.
+4. **Triage open dependabot PRs** — merge verified devDependency bumps or close
+   superseded ones so the PR queue stays actionable.
+5. **Keep the candidate seed pool stocked** — maintain at least three open,
+   bounded seeds so the weekly maintenance seed planner always has work to
+   promote without re-deriving project state.
 
 No breaking changes are planned. Anything that changes tool names, settings
 keys, or command names is a minor (`0.x.0`) bump and must be called out in the
@@ -79,13 +84,85 @@ Legend: `~time` = estimated focused effort; all targets are ≤ 90 min.
 `~45 min` · tooling
 
 Add a minimal, non-prescriptive Prettier config and a `format:check` script
-wired into `npm run ci` so style drift is caught automatically.
+wired into `npm run ci` so style drift is caught automatically. Style is
+currently enforced only by `tsc --noEmit` and review; a formatter closes the
+gap called out in "Known technical debt".
 
 **Acceptance criteria**
 
 - [ ] `.prettierrc.json` added with a small, intentional ruleset
 - [ ] `npm run format:check` runs in CI
 - [ ] Existing files formatted in the same PR (no behavior change)
+
+---
+
+### Seed 7 — Triage and merge open dependabot devDependency bump
+
+`~30 min` · dependency hygiene
+
+An open dependabot PR bumps `@earendil-works/*` devDependencies. Verify CI
+passes, confirm pins remain compatible with peerDependencies, then merge or
+close with a short rationale if superseded. Stale open PRs block the seed
+planner from treating dependency health as settled.
+
+**Acceptance criteria**
+
+- [ ] CI green on the dependabot branch (or rebased onto current `main`)
+- [ ] `npm run ci` passes locally after merge/rebase
+- [ ] PR merged or closed with a comment explaining the outcome
+- [ ] ROADMAP "Open PRs" row refreshed if the queue changes
+
+---
+
+### Seed 8 — Add ROADMAP candidate-count smoke test
+
+`~45 min` · test / planner guardrail
+
+DOT-999 showed the weekly seed planner cannot pick work when active candidate
+seeds drop below three. Add a smoke test in `tests/smoke.test.mjs` that parses
+`ROADMAP.md` and asserts at least three unchecked seeds remain in "Candidate
+maintenance seeds". Prevents silent planner starvation after seeds ship.
+
+**Acceptance criteria**
+
+- [ ] New smoke test counts active (`- [ ]`) seeds under "Candidate maintenance seeds"
+- [ ] Test fails with a clear message when count < 3
+- [ ] `npm run ci` passes on `main` after the test lands
+
+---
+
+### Seed 9 — Document subagent cancellation (`AbortSignal`) in docs
+
+`~30 min` · docs
+
+`runSubagent` accepts an optional `AbortSignal` and kills the child `pi`
+process on abort, but `docs/examples.md` and README do not mention
+cancellation. Document when callers should pass a signal and what happens on
+timeout/abort so integrators can wire long-running diffs safely.
+
+**Acceptance criteria**
+
+- [ ] `docs/examples.md` includes a short "Cancellation" subsection with a
+  usage note (no API surface change)
+- [ ] README "Features" or "Configuration" links to the new subsection
+- [ ] No behavior changes — docs only
+
+---
+
+### Seed 10 — Expand `git-exec` error-path test coverage
+
+`~60 min` · test / correctness
+
+`tests/git-exec.test.mjs` covers success and invalid-command paths only.
+Add focused tests for non-zero exit with stderr populated and for commands
+run outside a git repository. These paths feed user-facing tool errors and
+should not regress silently.
+
+**Acceptance criteria**
+
+- [ ] Test for git command failure with stderr message preserved
+- [ ] Test for `runGit` invoked in a non-repo directory (non-zero status)
+- [ ] `npm run ci` passes; no production code changes unless a bug is found
 
 ---
 
