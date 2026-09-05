@@ -1,8 +1,7 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { loadGitDelegateConfig, resolveSubagentRoute } from "../config.ts";
-import { runGit } from "../git-exec.ts";
-import { buildSubagentPrompt, LOG_SUMMARY_PROMPT } from "../prompts.ts";
-import { runSubagent } from "../subagent-runner.ts";
+import { executeGitSummaryPipeline } from "../git-summary-pipeline.ts";
+import { textResult } from "../tool-result.ts";
+import { LOG_SUMMARY_PROMPT } from "../prompts.ts";
 
 export interface GitLogSummaryParams {
   range?: string;
@@ -16,47 +15,24 @@ export async function executeGitLogSummary(
   signal?: AbortSignal,
 ) {
   const range = params.range?.trim() || "HEAD~10..HEAD";
-  const config = loadGitDelegateConfig(ctx.cwd);
-  const route = resolveSubagentRoute("git_log_summary", config, {
-    provider: params.provider,
-    model: params.model,
-  });
 
-  const gitResult = runGit(["log", "--oneline", range], ctx.cwd);
-  if (gitResult.status !== 0) {
-    if (isNoCommitsInRange(gitResult.stderr)) {
-      return textResult("No commits in range.", { range, empty: true });
-    }
-    const error = gitResult.stderr || gitResult.stdout || `git log failed with exit code ${gitResult.status}`;
-    return textResult(error, { range, error: true });
-  }
-
-  if (!gitResult.stdout) {
-    return textResult("No commits in range.", { range, empty: true });
-  }
-
-  const subagent = await runSubagent({
+  return executeGitSummaryPipeline({
+    toolName: "git_log_summary",
+    gitArgs: ["log", "--oneline", range],
+    summaryPrompt: LOG_SUMMARY_PROMPT,
     cwd: ctx.cwd,
-    prompt: buildSubagentPrompt(LOG_SUMMARY_PROMPT, gitResult.stdout),
-    provider: route?.provider,
-    model: route?.model,
+    details: { range },
+    override: { provider: params.provider, model: params.model },
     signal,
+    gitFailureLabel: "git log",
+    emptyMessage: "No commits in range.",
+    onGitFailure: (gitResult) => {
+      if (isNoCommitsInRange(gitResult.stderr)) {
+        return textResult("No commits in range.", { range, empty: true });
+      }
+      return undefined;
+    },
   });
-
-  if (!subagent.outputText) {
-    const error = subagent.stderr || "Subagent returned no summary.";
-    return textResult(error, { range, error: true });
-  }
-
-  return textResult(subagent.outputText, {
-    range,
-    provider: route?.provider ?? null,
-    model: route?.model ?? null,
-  });
-}
-
-function textResult(text: string, details: Record<string, unknown> = {}) {
-  return { content: [{ type: "text" as const, text }], details };
 }
 
 function isNoCommitsInRange(stderr: string): boolean {
