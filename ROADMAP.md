@@ -37,8 +37,8 @@ unless they directly serve the cost/context-leverage thesis.
 | CI | `npm run ci` = `typecheck` + `node --test` + `pack:check` |
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
-| Open PRs | dependabot dev bumps (see GitHub PR list; do not hardcode numbers here) |
-| Last roadmap refresh | 2026-09-05 (DOT-999) |
+| Open PRs | 0 |
+| Last roadmap refresh | 2026-09-07 (DOT-1745) |
 
 v0.2.5 rolled up the 2026-08-22 managed OSS dependency and maintenance PR
 batch. v0.2.4 shipped the Discord release webhook verification bump. v0.2.3
@@ -93,24 +93,6 @@ gap called out in "Known technical debt".
 - [ ] `.prettierrc.json` added with a small, intentional ruleset
 - [ ] `npm run format:check` runs in CI
 - [ ] Existing files formatted in the same PR (no behavior change)
-
----
-
-### Seed 7 — Triage and merge open dependabot devDependency bump
-
-`~30 min` · dependency hygiene
-
-An open dependabot PR bumps `@earendil-works/*` devDependencies. Verify CI
-passes, confirm pins remain compatible with peerDependencies, then merge or
-close with a short rationale if superseded. Stale open PRs block the seed
-planner from treating dependency health as settled.
-
-**Acceptance criteria**
-
-- [ ] CI green on the dependabot branch (or rebased onto current `main`)
-- [ ] `npm run ci` passes locally after merge/rebase
-- [ ] PR merged or closed with a comment explaining the outcome
-- [ ] ROADMAP "Open PRs" row refreshed if the queue changes
 
 ---
 
@@ -180,6 +162,9 @@ should not regress silently.
 - **Seed 3 — Close the stale `actions/checkout` dependabot branch** — verified
   in DOT-1540; all workflows pin `actions/checkout@v7`, and dependabot PR #6
   merged 2026-06-24.
+- **Seed 7 — Triage and merge open dependabot devDependency bump** — merged
+  dependabot PR #48 in DOT-1745; `@earendil-works/*` devDependencies bumped
+  from 0.84.1 to 0.84.4, peerDependencies (`*`) unchanged, open PR queue cleared.
 
 ## How to update this roadmap
 
