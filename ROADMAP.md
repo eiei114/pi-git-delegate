@@ -163,8 +163,9 @@ should not regress silently.
   in DOT-1540; all workflows pin `actions/checkout@v7`, and dependabot PR #6
   merged 2026-06-24.
 - **Seed 7 — Triage and merge open dependabot devDependency bump** — merged
-  dependabot PR #48 in DOT-1745; `@earendil-works/*` devDependencies bumped
-  from 0.84.1 to 0.84.4, peerDependencies (`*`) unchanged, open PR queue cleared.
+  dependabot PR #48 in DOT-1745; lockfile resolved `@earendil-works/*`
+  devDependencies to 0.84.4 within the existing `^0.84.1` manifest ranges,
+  peerDependencies (`*`) unchanged, open PR queue cleared.
 
 ## How to update this roadmap
 
