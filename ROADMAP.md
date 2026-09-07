@@ -38,7 +38,7 @@ unless they directly serve the cost/context-leverage thesis.
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
 | Open PRs | 0 |
-| Last roadmap refresh | 2026-09-07 (DOT-1745) |
+| Last roadmap refresh | 2026-09-06 (DOT-1745) |
 
 v0.2.5 rolled up the 2026-08-22 managed OSS dependency and maintenance PR
 batch. v0.2.4 shipped the Discord release webhook verification bump. v0.2.3
