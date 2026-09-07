@@ -38,7 +38,7 @@ unless they directly serve the cost/context-leverage thesis.
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
 | Open PRs | 0 |
-| Last roadmap refresh | 2026-09-07 (DOT-1745) |
+| Last roadmap refresh | 2026-09-06 (DOT-1745) |
 
 v0.2.5 rolled up the 2026-08-22 managed OSS dependency and maintenance PR
 batch. v0.2.4 shipped the Discord release webhook verification bump. v0.2.3
@@ -163,8 +163,9 @@ should not regress silently.
   in DOT-1540; all workflows pin `actions/checkout@v7`, and dependabot PR #6
   merged 2026-06-24.
 - **Seed 7 — Triage and merge open dependabot devDependency bump** — merged
-  dependabot PR #48 in DOT-1745; `@earendil-works/*` devDependencies bumped
-  from 0.84.1 to 0.84.4, peerDependencies (`*`) unchanged, open PR queue cleared.
+  dependabot PR #48 in DOT-1745; lockfile resolves `@earendil-works/*`
+  devDependencies to 0.84.4 while manifest ranges remain ^0.84.1,
+  peerDependencies (`*`) unchanged, open PR queue cleared.
 
 ## How to update this roadmap
 
