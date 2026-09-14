@@ -38,7 +38,8 @@ unless they directly serve the cost/context-leverage thesis.
 | Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
 | Open PRs | 0 |
-| Last roadmap refresh | 2026-09-06 (DOT-1745) |
+| DevDependencies | `@earendil-works/*` ^0.85.1; `@types/node` ^26.1.0 (resolved 26.4.1) |
+| Last roadmap refresh | 2026-09-14 (DOT-1850) |
 
 v0.2.5 rolled up the 2026-08-22 managed OSS dependency and maintenance PR
 batch. v0.2.4 shipped the Discord release webhook verification bump. v0.2.3
@@ -54,8 +55,9 @@ seeds listed below.
    sync; no fixed six-file doc set.
 3. **Roadmap-driven seeding** — each week, promote one bounded seed below into
    a tracked issue and PR.
-4. **Triage open dependabot PRs** — merge verified devDependency bumps or close
-   superseded ones so the PR queue stays actionable.
+4. **Triage open dependabot PRs** — when dependabot opens devDependency bumps,
+   merge verified updates or close superseded ones so the PR queue stays
+   actionable. (Queue is clear as of DOT-1850; no standing open dependabot PRs.)
 5. **Keep the candidate seed pool stocked** — maintain at least three open,
    bounded seeds so the weekly maintenance seed planner always has work to
    promote without re-deriving project state.
@@ -166,6 +168,11 @@ should not regress silently.
   dependabot PR #48 in DOT-1745; lockfile resolved `@earendil-works/*`
   devDependencies to 0.84.4 within the existing `^0.84.1` manifest ranges,
   peerDependencies (`*`) unchanged, open PR queue cleared.
+- **Post-Seed 7 Pi devDependency alignment (DOT-1776)** — landed in PR #55;
+  manifest ranges bumped from `^0.84.1` to `^0.85.1`, lockfile refreshed,
+  npm audit moderate findings cleared.
+- **Dependabot `@types/node` bump (#54)** — merged 2026-09-07; `@types/node`
+  26.2.0 → 26.4.1 within the npm-dev-minor-patch group.
 
 ## How to update this roadmap
 
