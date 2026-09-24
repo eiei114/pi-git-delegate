@@ -36,6 +36,23 @@ test("roadmap release status tracks package version", () => {
   assert.ok(roadmap.includes(`| \`package.json\` version | \`${version}\``));
 });
 
+test("roadmap keeps at least three active candidate seeds", () => {
+  const candidateSection = roadmap.match(
+    /^## Candidate maintenance seeds$([\s\S]*?)(?=^## )/m,
+  )?.[1];
+  assert.ok(candidateSection, "Candidate maintenance seeds section missing from ROADMAP.md");
+
+  const activeSeeds = candidateSection
+    .split(/^### Seed /m)
+    .slice(1)
+    .filter((seed) => /^\d+\b[\s\S]*?- \[ \]/m.test(seed));
+
+  assert.ok(
+    activeSeeds.length >= 3,
+    `Candidate maintenance seeds must contain at least three active (- [ ]) seeds; found ${activeSeeds.length}`,
+  );
+});
+
 test("roadmap open PRs row avoids stale hardcoded PR numbers", () => {
   const match = roadmap.match(/\| Open PRs \|([^|]+)\|/);
   assert.ok(match, "Open PRs row missing from ROADMAP.md");
