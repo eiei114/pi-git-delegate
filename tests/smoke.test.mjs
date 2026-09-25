@@ -38,14 +38,14 @@ test("roadmap release status tracks package version", () => {
 
 test("roadmap keeps at least three active candidate seeds", () => {
   const candidateSection = roadmap.match(
-    /^## Candidate maintenance seeds$([\s\S]*?)(?=^## )/m,
+    /^## Candidate maintenance seeds$([\s\S]*?)(?=^## |(?![\s\S]))/m,
   )?.[1];
   assert.ok(candidateSection, "Candidate maintenance seeds section missing from ROADMAP.md");
 
   const activeSeeds = candidateSection
     .split(/^### Seed /m)
     .slice(1)
-    .filter((seed) => /^\d+\b[\s\S]*?- \[ \]/m.test(seed));
+    .filter((seed) => /^\d+\b[\s\S]*?^[ \t]*- \[ \]/m.test(seed));
 
   assert.ok(
     activeSeeds.length >= 3,
