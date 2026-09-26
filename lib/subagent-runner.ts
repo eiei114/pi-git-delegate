@@ -69,6 +69,7 @@ export async function runSubagent(request: SubagentRequest): Promise<SubagentRes
 
   let stderr = "";
   const messages: Message[] = [];
+  const stdoutChunks: Buffer[] = [];
 
   const exitCode = await new Promise<number>((resolve) => {
     const invocation = getPiInvocation(args);
@@ -77,8 +78,6 @@ export async function runSubagent(request: SubagentRequest): Promise<SubagentRes
       shell: false,
       stdio: ["ignore", "pipe", "pipe"],
     });
-
-    let buffer = "";
 
     const processLine = (line: string) => {
       if (!line.trim()) return;
@@ -95,10 +94,7 @@ export async function runSubagent(request: SubagentRequest): Promise<SubagentRes
     };
 
     proc.stdout.on("data", (data) => {
-      buffer += data.toString();
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
-      for (const line of lines) processLine(line);
+      stdoutChunks.push(data);
     });
 
     proc.stderr.on("data", (data) => {
@@ -106,7 +102,8 @@ export async function runSubagent(request: SubagentRequest): Promise<SubagentRes
     });
 
     proc.on("close", (code) => {
-      if (buffer.trim()) processLine(buffer);
+      const output = Buffer.concat(stdoutChunks).toString("utf8");
+      for (const line of output.split("\n")) processLine(line);
       resolve(code ?? 0);
     });
 
