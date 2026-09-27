@@ -1,43 +1,28 @@
 # Changelog
 
+## [Unreleased]
+
 ## [0.2.10] - 2026-09-27
 
 - chore: periodic patch bump after 7+ days without npm publish
 
-## 0.2.9 - 2026-09-27
 
-- chore: periodic patch bump after 7+ days without npm publish
 
-## 0.2.8 - 2026-09-27
 
-- chore: periodic patch bump after 7+ days without npm publish
-
-## 0.2.7 - 2026-09-27
-
-- chore: periodic patch bump after 7+ days without npm publish
-
-## 0.2.6 - 2026-09-27
-
-- chore: periodic patch bump after 7+ days without npm publish
 
 All notable changes to this project will be documented in this file.
 
 This project follows semantic versioning.
-
-## [Unreleased]
-
 ## [0.2.5] - 2026-08-22
 
 ### Changed
 
 - Merge the 2026-08-22 managed OSS dependency and maintenance PR batch.
-
 ## [0.2.4] - 2026-08-04
 
 ### Changed
 
 - Bump package version for the Discord release webhook verification.
-
 ## [0.2.3] - 2026-07-21
 
 ### Changed
@@ -54,20 +39,17 @@ This project follows semantic versioning.
 - Integration test for empty `git_blame_summary` output.
 - CI workflow smoke test verifying `npm run ci` runs on push/PR.
 - `docs/incidents/2026-07-04-failed-npm-publish.md` — postmortem for a failed Trusted Publishing run.
-
 ## [0.2.2] - 2026-07-04
 
 ### Changed
 
 - Add Buy Me a Coffee sponsor button to README and native GitHub funding link via `.github/FUNDING.yml`.
-
 ## [0.2.1] - 2026-06-27
 
 ### Changed
 
 - README: add canonical `Quick start` section after `Install`, aligned with the Pi OSS extension template.
 - README: preserve delegation guidance, configuration, and tool examples under `When to delegate`, `Configuration`, and `Tool examples`.
-
 ## [0.2.0] - 2026-06-13
 
 ### Added
@@ -77,14 +59,12 @@ This project follows semantic versioning.
 - `git_blame_summary` typed tool — delegates `git blame` contributor context to a subagent.
 - `/git-delegate:configure` and `/git-delegate:status` commands for settings help.
 - Removed template `skills/`, `prompts/`, and `themes/` resources to avoid Pi resource conflicts and invalid theme warnings.
-
 ## [0.1.2] - 2026-06-04
 
 ### Changed
 
 - README and `docs/template-checklist.md` now follow the Pi OSS minimal-docs policy: `docs/` is optional, with explicit post-generation cleanup for template bootstrap docs.
 - Template bootstrap docs (`github-template.md`, `repository-settings.md`, `typescript.md`) are labeled for delete-or-merge after setup.
-
 ## [0.1.1] - 2026-06-01
 
 ### Changed
@@ -92,7 +72,6 @@ This project follows semantic versioning.
 - Publish workflow now supports npm publishing on merged package version bumps in addition to tags, releases, and manual dispatch.
 - Publish workflow now installs a current npm CLI so npm Trusted Publishing OIDC is supported.
 - CI and publish workflow commands no longer include literal trailing `\\n` text.
-
 ## [0.1.0] - YYYY-MM-DD
 
 ### Added
