@@ -38,6 +38,7 @@ The cost leverage principle: **delegate only when input is large and output is s
 - **`/git-delegate:configure`** — interactive help for writing the settings block
 - **`/git-delegate:status`** — show current model routing and example JSON
 - **Model override parameter** — override model per-call via tool parameter
+- **Failure recovery** — read [retry boundaries and failure behavior](docs/examples.md#failure-recovery-and-retry-boundaries)
 - **Fallback to current model** — no config needed; uses the parent session model
 - **Write guard** — no write operations exposed as tools
 

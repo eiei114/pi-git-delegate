@@ -60,3 +60,37 @@ Model-only shorthand is also supported (uses the session provider):
 ```
 
 `null` uses the current session provider/model.
+
+## Failure recovery and retry boundaries
+
+The delegated tools are read-only, but each call has two separate steps:
+
+1. The extension runs the local `git` command in the current working directory.
+2. Only when that command succeeds with non-empty output does it start a `pi`
+   subagent to summarize that output.
+
+If Git exits non-zero, the tool normally returns Git's stderr (or stdout when
+stderr is empty) and does **not** start a subagent. The log tool treats its
+known no-commits-in-range errors as the normal `No commits in range.` result.
+Other common causes such as a missing repository, invalid revision, or missing
+blame path must be fixed in the working directory or tool arguments before
+retrying. An empty successful result (for example, no diff) is also returned
+directly without delegation.
+
+If the subagent cannot produce a summary, the tool returns its error instead;
+the raw Git output is not included in the tool response. Retry the same tool
+only for a transient local or model/transport failure, or after correcting the
+reported Git error. Retrying does not mutate the repository: it reruns the
+read-only Git command and, when applicable, an isolated subagent process.
+
+For example, from a Pi session:
+
+```txt
+git_diff_summary({ref: "HEAD~3"})
+```
+
+If this reports `unknown revision`, use an existing revision and call the tool
+again. Do not use these delegated tools for write operations such as `git
+commit` or `git push`; perform those directly in the parent session. A caller
+that supplies an `AbortSignal` may cancel the subagent; cancellation stops the
+child process, and the Git step itself is not retried automatically.
