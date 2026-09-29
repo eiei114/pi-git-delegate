@@ -92,6 +92,6 @@ git_diff_summary({ref: "HEAD~3"})
 If this reports `unknown revision`, use an existing revision and call the tool
 again. Do not use these delegated tools for write operations such as `git
 commit` or `git push`; perform those directly in the parent session. A caller
-A caller that supplies an `AbortSignal` may cancel the subagent; the child
+that supplies an `AbortSignal` may cancel the subagent; the child
 process may remain alive if it handles or ignores `SIGTERM`, and the Git step
 itself is not retried automatically.
