@@ -6,7 +6,10 @@ import { join } from "node:path";
 import test from "node:test";
 
 const { textResult } = await import("../lib/tool-result.ts");
-const { executeGitSummaryPipeline } = await import("../lib/git-summary-pipeline.ts");
+const {
+  createGitSummaryPipelineOptions,
+  executeGitSummaryPipeline,
+} = await import("../lib/git-summary-pipeline.ts");
 const { createEchoSubagentRunner, setSubagentRunnerForTests } = await import("../lib/subagent-runner.ts");
 const { DIFF_SUMMARY_PROMPT } = await import("../lib/prompts.ts");
 
@@ -41,6 +44,28 @@ test("textResult returns typed text content and details", () => {
   const result = textResult("hello", { ref: "HEAD", empty: true });
   assert.deepEqual(result.content, [{ type: "text", text: "hello" }]);
   assert.deepEqual(result.details, { ref: "HEAD", empty: true });
+});
+
+test("createGitSummaryPipelineOptions preserves tool settings and applies context routing", () => {
+  const signal = new AbortController().signal;
+  const options = createGitSummaryPipelineOptions(
+    { cwd: "/workspace" },
+    { provider: "anthropic", model: "haiku" },
+    signal,
+    {
+      toolName: "git_diff_summary",
+      gitArgs: ["diff", "HEAD"],
+      summaryPrompt: DIFF_SUMMARY_PROMPT,
+      details: { ref: "HEAD" },
+      gitFailureLabel: "git diff",
+      emptyMessage: "No changes found.",
+    },
+  );
+
+  assert.equal(options.cwd, "/workspace");
+  assert.deepEqual(options.override, { provider: "anthropic", model: "haiku" });
+  assert.equal(options.signal, signal);
+  assert.deepEqual(options.gitArgs, ["diff", "HEAD"]);
 });
 
 test("executeGitSummaryPipeline delegates to subagent on non-empty git output", async () => {

@@ -18,6 +18,34 @@ export interface GitSummaryPipelineOptions {
   onGitFailure?: (gitResult: GitRunResult) => ToolTextResult | undefined;
 }
 
+export interface GitSummaryToolParams {
+  provider?: string;
+  model?: string;
+}
+
+export interface GitSummaryToolContext {
+  cwd: string;
+}
+
+/**
+ * Builds the adapter-to-pipeline boundary shared by each git summary tool.
+ * Keeping context and per-call routing here prevents tool adapters from
+ * drifting when the pipeline gains another execution option.
+ */
+export function createGitSummaryPipelineOptions(
+  context: GitSummaryToolContext,
+  params: GitSummaryToolParams,
+  signal: AbortSignal | undefined,
+  options: Omit<GitSummaryPipelineOptions, "cwd" | "override" | "signal">,
+): GitSummaryPipelineOptions {
+  return {
+    ...options,
+    cwd: context.cwd,
+    override: { provider: params.provider, model: params.model },
+    signal,
+  };
+}
+
 export async function executeGitSummaryPipeline(
   options: GitSummaryPipelineOptions,
 ): Promise<ToolTextResult> {

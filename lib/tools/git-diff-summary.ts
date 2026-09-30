@@ -1,5 +1,8 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { executeGitSummaryPipeline } from "../git-summary-pipeline.ts";
+import {
+  createGitSummaryPipelineOptions,
+  executeGitSummaryPipeline,
+} from "../git-summary-pipeline.ts";
 import { DIFF_SUMMARY_PROMPT } from "../prompts.ts";
 
 export interface GitDiffSummaryParams {
@@ -15,15 +18,19 @@ export async function executeGitDiffSummary(
 ) {
   const ref = params.ref?.trim() || "HEAD";
 
-  return executeGitSummaryPipeline({
-    toolName: "git_diff_summary",
-    gitArgs: ["diff", ref],
-    summaryPrompt: DIFF_SUMMARY_PROMPT,
-    cwd: ctx.cwd,
-    details: { ref },
-    override: { provider: params.provider, model: params.model },
-    signal,
-    gitFailureLabel: "git diff",
-    emptyMessage: "No changes found.",
-  });
+  return executeGitSummaryPipeline(
+    createGitSummaryPipelineOptions(
+      ctx,
+      params,
+      signal,
+      {
+        toolName: "git_diff_summary",
+        gitArgs: ["diff", ref],
+        summaryPrompt: DIFF_SUMMARY_PROMPT,
+        details: { ref },
+        gitFailureLabel: "git diff",
+        emptyMessage: "No changes found.",
+      },
+    ),
+  );
 }
