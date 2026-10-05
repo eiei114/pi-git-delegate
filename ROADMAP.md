@@ -31,21 +31,22 @@ unless they directly serve the cost/context-leverage thesis.
 
 | Item | Value |
 |---|---|
-| Latest release | **v0.2.11** (npm `0.2.5`, published 2026-08-22) |
+| Latest release | **v0.2.11** (npm `0.2.11`, published 2026-09-30) |
 | `package.json` version | `0.2.11` (in sync with npm) |
 | Release model | npm Trusted Publishing via GitHub Actions; auto-release on `package.json` version bump |
 | CI | `npm run ci` = `typecheck` + `node --test` + `pack:check` |
-| Test files | 8 (`commands`, `config`, `git-exec`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
+| Test files | 9 (`commands`, `config`, `git-exec`, `git-summary-pipeline`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
-| Open PRs | 0 |
-| DevDependencies | `@earendil-works/*` ^0.85.1; `@types/node` ^26.1.0 (resolved 26.4.1) |
-| Last roadmap refresh | 2026-09-14 (DOT-1850) |
+| Open PRs | 1 (grouped Dependabot devDependency update) |
+| DevDependencies | `@earendil-works/*` ^0.99.1; `@types/node` ^26.1.0 (resolved 26.4.1); `typebox` latest (resolved 1.3.27) |
+| Audit | 1 high transitive devDependency finding (`brace-expansion` via the Pi SDK; not shipped in the package) |
+| Last roadmap refresh | 2026-10-05 (DOT-2144) |
 
-v0.2.5 rolled up the 2026-08-22 managed OSS dependency and maintenance PR
-batch. v0.2.4 shipped the Discord release webhook verification bump. v0.2.3
-added the devDependency pin, CI template alignment, expanded test coverage,
-and CHANGELOG hygiene. The next release will roll up any remaining maintenance
-seeds listed below.
+v0.2.11 shipped the Pi SDK `0.99.1` alignment. v0.2.10 and v0.2.9 were
+periodic patch releases, while v0.2.5 rolled up the 2026-08-22 managed OSS
+dependency and maintenance batch. GitHub currently has no open issues and one
+open grouped Dependabot update for `typebox` and `@types/node`; its CI is green.
+The next release should roll up any remaining maintenance seeds listed below.
 
 ## Short-term goals (next 2–3 releases)
 
@@ -57,7 +58,8 @@ seeds listed below.
    a tracked issue and PR.
 4. **Triage open dependabot PRs** — when dependabot opens devDependency bumps,
    merge verified updates or close superseded ones so the PR queue stays
-   actionable. (Queue is clear as of DOT-1850; no standing open dependabot PRs.)
+   actionable. One grouped update is currently open for `typebox` and
+   `@types/node`.
 5. **Keep the candidate seed pool stocked** — maintain at least three open,
    bounded seeds so the weekly maintenance seed planner always has work to
    promote without re-deriving project state.
@@ -98,41 +100,6 @@ gap called out in "Known technical debt".
 
 ---
 
-### Seed 8 — Add ROADMAP candidate-count smoke test
-
-`~45 min` · test / planner guardrail
-
-DOT-999 showed the weekly seed planner cannot pick work when active candidate
-seeds drop below three. Add a smoke test in `tests/smoke.test.mjs` that parses
-`ROADMAP.md` and asserts at least three unchecked seeds remain in "Candidate
-maintenance seeds". Prevents silent planner starvation after seeds ship.
-
-**Acceptance criteria**
-
-- [ ] New smoke test counts active (`- [ ]`) seeds under "Candidate maintenance seeds"
-- [ ] Test fails with a clear message when count < 3
-- [ ] `npm run ci` passes on `main` after the test lands
-
----
-
-### Seed 9 — Document subagent cancellation (`AbortSignal`) in docs
-
-`~30 min` · docs
-
-`runSubagent` accepts an optional `AbortSignal` and kills the child `pi`
-process on abort, but `docs/examples.md` and README do not mention
-cancellation. Document when callers should pass a signal and what happens on
-timeout/abort so integrators can wire long-running diffs safely.
-
-**Acceptance criteria**
-
-- [ ] `docs/examples.md` includes a short "Cancellation" subsection with a
-  usage note (no API surface change)
-- [ ] README "Features" or "Configuration" links to the new subsection
-- [ ] No behavior changes — docs only
-
----
-
 ### Seed 10 — Expand `git-exec` error-path test coverage
 
 `~60 min` · test / correctness
@@ -147,6 +114,41 @@ should not regress silently.
 - [ ] Test for git command failure with stderr message preserved
 - [ ] Test for `runGit` invoked in a non-repo directory (non-zero status)
 - [ ] `npm run ci` passes; no production code changes unless a bug is found
+
+---
+
+### Seed 11 — Add adapter-level model-routing regression tests
+
+`~45 min` · test / correctness
+
+The shared `createGitSummaryPipelineOptions` adapter boundary landed in
+DOT-2084. The helper itself is covered, but integration coverage currently
+exercises configured and per-call model routing only through
+`git_blame_summary`. Add focused tool-level tests for `git_diff_summary` and
+`git_log_summary` so each adapter remains wired through the shared pipeline.
+
+**Acceptance criteria**
+
+- [ ] Diff and log tests assert configured model routing reaches the result details
+- [ ] Diff and log tests each cover a per-call model override
+- [ ] `npm run ci` passes; no production code changes unless a regression is found
+
+---
+
+### Seed 12 — Resolve the transitive npm audit finding
+
+`~60 min` · dependency health / security
+
+`npm audit` currently reports one high-severity `brace-expansion` finding in
+the dev-only dependency chain `@earendil-works/pi-coding-agent` → `minimatch`
+→ `brace-expansion`. Determine whether an upstream Pi SDK update or a narrow
+lockfile override is appropriate; avoid a broad, unreviewed audit fix.
+
+**Acceptance criteria**
+
+- [ ] The dependency path and an upstream update or narrow override are verified
+- [ ] `npm audit` no longer reports this high-severity finding, or the upstream blocker is documented
+- [ ] `npm run ci` passes and the published package contents remain unchanged
 
 ---
 
@@ -173,6 +175,12 @@ should not regress silently.
   npm audit moderate findings cleared.
 - **Dependabot `@types/node` bump (#54)** — merged 2026-09-07; `@types/node`
   26.2.0 → 26.4.1 within the npm-dev-minor-patch group.
+- **Seed 8 — Add ROADMAP candidate-count smoke test** — landed in PR #59
+  (DOT-1951); `tests/smoke.test.mjs` now guards against fewer than three active
+  candidate seeds.
+- **Seed 9 — Document subagent cancellation (`AbortSignal`)** — landed in PR
+  #74 (DOT-2056); `docs/examples.md` now records cancellation and retry
+  boundaries for delegated subagents.
 
 ## How to update this roadmap
 
