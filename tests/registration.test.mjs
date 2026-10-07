@@ -22,7 +22,10 @@ test("registerGitDelegateTools registers all three typed tools", () => {
   assert.equal(tools.size, 3);
   for (const name of GIT_DELEGATE_TOOL_NAMES) {
     assert.equal(tools.has(name), true, `missing tool ${name}`);
-    assert.equal(typeof tools.get(name).execute, "function");
+    const registration = tools.get(name);
+    assert.equal(typeof registration.execute, "function");
+    assert.ok(registration.parameters.properties.provider);
+    assert.ok(registration.parameters.properties.model);
   }
 });
 
