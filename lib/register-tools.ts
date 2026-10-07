@@ -1,8 +1,8 @@
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { executeGitBlameSummary } from "./tools/git-blame-summary.ts";
-import { executeGitDiffSummary } from "./tools/git-diff-summary.ts";
-import { executeGitLogSummary } from "./tools/git-log-summary.ts";
+import { executeGitBlameSummary, type GitBlameSummaryParams } from "./tools/git-blame-summary.ts";
+import { executeGitDiffSummary, type GitDiffSummaryParams } from "./tools/git-diff-summary.ts";
+import { executeGitLogSummary, type GitLogSummaryParams } from "./tools/git-log-summary.ts";
 
 const modelOverrideParameters = {
   provider: Type.Optional(Type.String({ description: "Override provider for this call." })),
@@ -31,8 +31,8 @@ export const GIT_DELEGATE_TOOL_NAMES = [
   "git_blame_summary",
 ] as const;
 
-export function registerGitDelegateTools(pi: ExtensionAPI): void {
-  pi.registerTool({
+const toolRegistrations: Parameters<ExtensionAPI["registerTool"]>[0][] = [
+  {
     name: "git_diff_summary",
     label: "Git Diff Summary",
     description: "Run git diff and delegate summarization to a subagent.",
@@ -43,11 +43,10 @@ export function registerGitDelegateTools(pi: ExtensionAPI): void {
     ],
     parameters: gitDiffSummaryParameters,
     async execute(_toolCallId, params, signal, _onUpdate, ctx) {
-      return executeGitDiffSummary(params, ctx, signal);
+      return executeGitDiffSummary(params as GitDiffSummaryParams, ctx as ExtensionContext, signal);
     },
-  });
-
-  pi.registerTool({
+  },
+  {
     name: "git_log_summary",
     label: "Git Log Summary",
     description: "Run git log and delegate digest generation to a subagent.",
@@ -57,11 +56,10 @@ export function registerGitDelegateTools(pi: ExtensionAPI): void {
     ],
     parameters: gitLogSummaryParameters,
     async execute(_toolCallId, params, signal, _onUpdate, ctx) {
-      return executeGitLogSummary(params, ctx, signal);
+      return executeGitLogSummary(params as GitLogSummaryParams, ctx as ExtensionContext, signal);
     },
-  });
-
-  pi.registerTool({
+  },
+  {
     name: "git_blame_summary",
     label: "Git Blame Summary",
     description: "Run git blame and delegate contributor context to a subagent.",
@@ -71,7 +69,13 @@ export function registerGitDelegateTools(pi: ExtensionAPI): void {
     ],
     parameters: gitBlameSummaryParameters,
     async execute(_toolCallId, params, signal, _onUpdate, ctx) {
-      return executeGitBlameSummary(params, ctx, signal);
+      return executeGitBlameSummary(params as GitBlameSummaryParams, ctx as ExtensionContext, signal);
     },
-  });
+  },
+];
+
+export function registerGitDelegateTools(pi: ExtensionAPI): void {
+  for (const registration of toolRegistrations) {
+    pi.registerTool(registration);
+  }
 }
