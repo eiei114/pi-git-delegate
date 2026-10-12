@@ -32,17 +32,19 @@ unless they directly serve the cost/context-leverage thesis.
 | Item | Value |
 |---|---|
 | Latest release | **v0.2.11** (npm `0.2.11`, published 2026-09-30) |
-| `package.json` version | `0.2.11` (in sync with npm) |
-| Release model | npm Trusted Publishing via GitHub Actions; auto-release on `package.json` version bump |
-| CI | `npm run ci` = `typecheck` + `node --test` + `pack:check` |
-| Test files | 9 (`commands`, `config`, `git-exec`, `git-summary-pipeline`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
+| `package.json` version | `0.2.12` (prepared for release; not yet published) |
+| Release model | npm Trusted Publishing via GitHub Actions; manual release dispatch on `main` after authorization |
+| CI | `npm run ci` = `typecheck` + `node --test` + actual Pi SDK smoke + `pack:check` |
+| Test files | 10 (`commands`, `config`, `git-exec`, `git-summary-pipeline`, `pi-sdk-smoke-contract`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
 | Open PRs | 1 (grouped Dependabot devDependency update) |
-| DevDependencies | `@earendil-works/*` ^0.99.1; `@types/node` ^26.1.0 (resolved 26.4.1); `typebox` latest (resolved 1.3.27) |
+| DevDependencies | `@earendil-works/*` 1.1.0; `@types/node` ^26.1.0; `typebox` latest |
 | Audit | 1 high transitive devDependency finding (`brace-expansion` via the Pi SDK; not shipped in the package) |
 | Last roadmap refresh | 2026-10-05 (DOT-2144) |
 
-v0.2.11 shipped the Pi SDK `0.99.1` alignment. v0.2.10 and v0.2.9 were
+v0.2.11 shipped the Pi SDK `0.99.1` alignment. The unreleased `0.2.12` package
+prepares the SDK `1.1.0` compatibility update; ordinary merges no longer trigger
+release or publication. v0.2.10 and v0.2.9 were
 periodic patch releases, while v0.2.5 rolled up the 2026-08-22 managed OSS
 dependency and maintenance batch. GitHub currently has no open issues and one
 open grouped Dependabot update for `typebox` and `@types/node`; its CI is green.

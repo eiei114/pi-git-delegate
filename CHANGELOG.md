@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.2.12] - 2026-10-12
+
+### Changed
+
+- Pin `@earendil-works/pi-*` devDependencies to `1.1.0` for SDK compatibility.
+- Verify actual Pi host lifecycle and all three git-summary tools with a deterministic local provider.
+- Require manual release dispatch so a routine version bump cannot release or publish on merge.
+
 ## [0.2.11] - 2026-09-30
 
 ### Changed

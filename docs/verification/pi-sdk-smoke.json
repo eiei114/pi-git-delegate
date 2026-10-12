@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "verification_contract": "pi-sdk-behavior-v2",
+  "sdk_versions": {
+    "@earendil-works/pi-agent-core": "1.1.0",
+    "@earendil-works/pi-ai": "1.1.0",
+    "@earendil-works/pi-coding-agent": "1.1.0",
+    "@earendil-works/pi-tui": "1.1.0"
+  },
+  "platform": "win32",
+  "model_inference": "No paid/external inference; actual Pi and extension call a deterministic OpenAI-compatible test model bound only to loopback.",
+  "unhandled_errors": 0,
+  "extension_load_errors": 0,
+  "cases": [
+    {
+      "name": "extension_load",
+      "command": "npm run smoke:pi",
+      "exit_code": 0,
+      "passed": true,
+      "evidence": "docs/verification/pi-sdk-smoke/extension_load.json",
+      "assertions": [
+        {
+          "id": "extension_registered",
+          "expected": "Actual Pi RPC reports both pi-git-delegate commands after loading the extension",
+          "observed": "{\"commands\":[\"git-delegate:configure\",\"git-delegate:status\"],\"exit_code\":0,\"natural_exit\":true}",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "happy_path",
+      "command": "npm run smoke:pi",
+      "exit_code": 0,
+      "passed": true,
+      "evidence": "docs/verification/pi-sdk-smoke/happy_path.json",
+      "assertions": [
+        {
+          "id": "feature_response",
+          "expected": "Real Pi executes diff, log, and blame tools, each delegates to the isolated loopback model, and returns its summary",
+          "observed": "{\"tools\":[{\"name\":\"git_diff_summary\",\"isError\":false,\"text\":\"Offline deterministic git summary.\"},{\"name\":\"git_log_summary\",\"isError\":false,\"text\":\"Offline deterministic git summary.\"},{\"name\":\"git_blame_summary\",\"isError\":false,\"text\":\"Offline deterministic git summary.\"}],\"local_provider_subagent_calls\":3,\"exit_code\":0,\"natural_exit\":true}",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "error_path",
+      "command": "npm run smoke:pi",
+      "exit_code": 0,
+      "passed": true,
+      "evidence": "docs/verification/pi-sdk-smoke/error_path.json",
+      "assertions": [
+        {
+          "id": "handled_error",
+          "expected": "A missing blame target returns the extension's structured error result while the actual Pi host remains healthy",
+          "observed": "{\"isError\":false,\"details\":{\"path\":\"missing-smoke-target.txt\",\"ref\":\"HEAD\",\"error\":true},\"text\":\"fatal: no such path missing-smoke-target.txt in HEAD\",\"exit_code\":0}",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "reload_cleanup",
+      "command": "npm run smoke:pi",
+      "exit_code": 0,
+      "passed": true,
+      "evidence": "docs/verification/pi-sdk-smoke/reload_cleanup.json",
+      "assertions": [
+        {
+          "id": "reloaded_extension_registered",
+          "expected": "A second actual Pi process freshly loads both pi-git-delegate commands",
+          "observed": "{\"commands\":[\"git-delegate:configure\",\"git-delegate:status\"],\"exit_code\":0}",
+          "passed": true
+        },
+        {
+          "id": "reloaded_feature_response",
+          "expected": "The second Pi process executes git_diff_summary and returns the deterministic delegated feature response",
+          "observed": "{\"isError\":false,\"text\":\"Offline deterministic git summary.\",\"local_provider_subagent_calls\":1}",
+          "passed": true
+        },
+        {
+          "id": "clean_shutdown",
+          "expected": "Both actual Pi processes close stdin, exit naturally with code zero, and emit no shutdown or unhandled error",
+          "observed": "{\"first_exit_code\":0,\"first_natural_exit\":true,\"exit_code\":0,\"natural_exit\":true,\"stderr\":\"\\n\"}",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "host_shell",
+      "command": "npm run smoke:pi",
+      "exit_code": 0,
+      "passed": true,
+      "evidence": "docs/verification/pi-sdk-smoke/host_shell.json",
+      "assertions": [
+        {
+          "id": "native_shell_boundary",
+          "expected": "The native host shell launches the locally pinned Pi CLI and returns exactly its SDK version",
+          "observed": "{\"output\":\"1.1.0\",\"expected_version\":\"1.1.0\",\"exit_code\":0}",
+          "passed": true
+        }
+      ]
+    }
+  ]
+}
