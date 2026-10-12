@@ -17,7 +17,7 @@
                 "description": "Help set up pi-git-delegate models in .pi/settings.json",
                 "source": "extension",
                 "sourceInfo": {
-                  "path": "C:\\Users\\Keisu\\multica_workspaces_desktop-api.multica.ai\\dotfield-9ac157d3a1bf\\dot-2279-adf7065e76c6\\workdir\\pi-git-delegate\\extensions\\index.ts",
+                  "path": "<repo>\\extensions\\index.ts",
                   "source": "cli",
                   "scope": "temporary",
                   "origin": "top-level"
@@ -28,7 +28,7 @@
                 "description": "Show current pi-git-delegate model routing settings",
                 "source": "extension",
                 "sourceInfo": {
-                  "path": "C:\\Users\\Keisu\\multica_workspaces_desktop-api.multica.ai\\dotfield-9ac157d3a1bf\\dot-2279-adf7065e76c6\\workdir\\pi-git-delegate\\extensions\\index.ts",
+                  "path": "<repo>\\extensions\\index.ts",
                   "source": "cli",
                   "scope": "temporary",
                   "origin": "top-level"
@@ -50,7 +50,7 @@
       "timeout_reached": false,
       "cleanup_used": false,
       "protocol_invalid": false,
-      "stdout": "{\"id\":\"smoke-get-commands\",\"type\":\"response\",\"command\":\"get_commands\",\"success\":true,\"data\":{\"commands\":[{\"name\":\"git-delegate:configure\",\"description\":\"Help set up pi-git-delegate models in .pi/settings.json\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"C:\\\\Users\\\\Keisu\\\\multica_workspaces_desktop-api.multica.ai\\\\dotfield-9ac157d3a1bf\\\\dot-2279-adf7065e76c6\\\\workdir\\\\pi-git-delegate\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}},{\"name\":\"git-delegate:status\",\"description\":\"Show current pi-git-delegate model routing settings\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"C:\\\\Users\\\\Keisu\\\\multica_workspaces_desktop-api.multica.ai\\\\dotfield-9ac157d3a1bf\\\\dot-2279-adf7065e76c6\\\\workdir\\\\pi-git-delegate\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}}]}}\n",
+      "stdout": "{\"id\":\"smoke-get-commands\",\"type\":\"response\",\"command\":\"get_commands\",\"success\":true,\"data\":{\"commands\":[{\"name\":\"git-delegate:configure\",\"description\":\"Help set up pi-git-delegate models in .pi/settings.json\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}},{\"name\":\"git-delegate:status\",\"description\":\"Show current pi-git-delegate model routing settings\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}}]}}\n",
       "exit_signal": null
     }
   ],

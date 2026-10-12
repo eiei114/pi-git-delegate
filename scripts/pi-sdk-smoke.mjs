@@ -7,6 +7,7 @@ import {
   behaviorAssertions, DELEGATED_SUMMARY, EXTENSION_LOAD_ERROR_PATTERN, SDK_VERSIONS,
   UNHANDLED_ERROR_PATTERN, VERIFICATION_CONTRACT,
 } from "./pi-sdk-smoke-contract.mjs";
+import { scrubLocalPaths } from "./pi-sdk-smoke-artifacts.mjs";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const REPORT_PATH = resolve(ROOT, "docs/verification/pi-sdk-smoke.json");
@@ -339,20 +340,20 @@ async function runNativeHostShell({ cli, agentDir, gitConfig, expectedVersion })
     expected_version: expectedVersion };
 }
 
-function scrub(text) {
-  return text.replaceAll(ROOT, "<repo>").replaceAll(tmpdir(), "<temp>");
-}
-
 function persistArtifact(name, captures, providerRequests) {
   const artifactPath = join(ARTIFACT_DIR, `${name}.json`);
   const artifact = {
     schema_version: 1,
     case: name,
     command: COMMAND,
-    captures: captures.map((capture) => ({ ...capture, stdout: scrub(capture.stdout ?? ""), stderr: scrub(capture.stderr ?? "") })),
+    captures,
     deterministic_provider_requests: providerRequests,
   };
-  writeFileSync(artifactPath, `${JSON.stringify(artifact, null, 2)}\n`, "utf8");
+  const serializedArtifact = JSON.stringify(artifact, null, 2);
+  writeFileSync(artifactPath, `${scrubLocalPaths(serializedArtifact, [
+    { path: ROOT, replacement: "<repo>" },
+    { path: tmpdir(), replacement: "<temp>" },
+  ])}\n`, "utf8");
   return `docs/verification/pi-sdk-smoke/${name}.json`;
 }
 
