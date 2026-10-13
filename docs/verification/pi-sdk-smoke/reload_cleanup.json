@@ -1,0 +1,1022 @@
+{
+  "schema_version": 1,
+  "case": "reload_cleanup",
+  "command": "npm run smoke:pi",
+  "captures": [
+    {
+      "records": [
+        {
+          "id": "smoke-get-commands",
+          "type": "response",
+          "command": "get_commands",
+          "success": true,
+          "data": {
+            "commands": [
+              {
+                "name": "git-delegate:configure",
+                "description": "Help set up pi-git-delegate models in .pi/settings.json",
+                "source": "extension",
+                "sourceInfo": {
+                  "path": "<repo>\\extensions\\index.ts",
+                  "source": "cli",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              },
+              {
+                "name": "git-delegate:status",
+                "description": "Show current pi-git-delegate model routing settings",
+                "source": "extension",
+                "sourceInfo": {
+                  "path": "<repo>\\extensions\\index.ts",
+                  "source": "cli",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "commands": [
+        "git-delegate:configure",
+        "git-delegate:status"
+      ],
+      "prompt_response": null,
+      "exit_code": 0,
+      "natural_exit": true,
+      "stderr": "",
+      "failure": null,
+      "timeout_reached": false,
+      "cleanup_used": false,
+      "protocol_invalid": false,
+      "stdout": "{\"id\":\"smoke-get-commands\",\"type\":\"response\",\"command\":\"get_commands\",\"success\":true,\"data\":{\"commands\":[{\"name\":\"git-delegate:configure\",\"description\":\"Help set up pi-git-delegate models in .pi/settings.json\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}},{\"name\":\"git-delegate:status\",\"description\":\"Show current pi-git-delegate model routing settings\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}}]}}\n",
+      "exit_signal": null
+    },
+    {
+      "records": [
+        {
+          "id": "smoke-get-commands",
+          "type": "response",
+          "command": "get_commands",
+          "success": true,
+          "data": {
+            "commands": [
+              {
+                "name": "git-delegate:configure",
+                "description": "Help set up pi-git-delegate models in .pi/settings.json",
+                "source": "extension",
+                "sourceInfo": {
+                  "path": "<repo>\\extensions\\index.ts",
+                  "source": "cli",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              },
+              {
+                "name": "git-delegate:status",
+                "description": "Show current pi-git-delegate model routing settings",
+                "source": "extension",
+                "sourceInfo": {
+                  "path": "<repo>\\extensions\\index.ts",
+                  "source": "cli",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "smoke-prompt",
+          "type": "response",
+          "command": "prompt",
+          "success": true,
+          "data": {
+            "disposition": "started"
+          }
+        },
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "system",
+            "content": "",
+            "sections": {
+              "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+              "tools": "<tools>\n- git_diff_summary: git_diff_summary: summarize git diff via subagent\n- git_log_summary: git_log_summary: summarize recent commits via subagent\n- git_blame_summary: git_blame_summary: summarize file blame history via subagent\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+              "rules": "<rules>\n- Use git_diff_summary when the user wants a concise summary of git diff output without loading raw diff into context.\n- Do not use this tool for write operations such as commit or push.\n- Use git_log_summary when the user wants a digest of recent commits without loading full log output into context.\n- Use git_blame_summary when the user asks who changed a file and wants a concise contributor summary.\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+              "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\README.md\n- Additional docs: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\docs\n- Examples: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+              "cwd": "<cwd>\n<temp>/pi-git-delegate-fixture-EalHbq\n</cwd>"
+            },
+            "timestamp": 1791794912353,
+            "toolsAdded": [
+              {
+                "name": "git_diff_summary",
+                "description": "Run git diff and delegate summarization to a subagent.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "ref": {
+                      "type": "string",
+                      "description": "Git ref to diff against (default: \"HEAD\")."
+                    },
+                    "provider": {
+                      "type": "string",
+                      "description": "Override provider for this call."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Override model for this call."
+                    }
+                  }
+                }
+              },
+              {
+                "name": "git_log_summary",
+                "description": "Run git log and delegate digest generation to a subagent.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "range": {
+                      "type": "string",
+                      "description": "Git log range (default: \"HEAD~10..HEAD\")."
+                    },
+                    "provider": {
+                      "type": "string",
+                      "description": "Override provider for this call."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Override model for this call."
+                    }
+                  }
+                }
+              },
+              {
+                "name": "git_blame_summary",
+                "description": "Run git blame and delegate contributor context to a subagent.",
+                "parameters": {
+                  "type": "object",
+                  "required": [
+                    "path"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "description": "File path to blame."
+                    },
+                    "ref": {
+                      "type": "string",
+                      "description": "Git ref (default: \"HEAD\")."
+                    },
+                    "provider": {
+                      "type": "string",
+                      "description": "Override provider for this call."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Override model for this call."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "system",
+            "content": "",
+            "sections": {
+              "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+              "tools": "<tools>\n- git_diff_summary: git_diff_summary: summarize git diff via subagent\n- git_log_summary: git_log_summary: summarize recent commits via subagent\n- git_blame_summary: git_blame_summary: summarize file blame history via subagent\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+              "rules": "<rules>\n- Use git_diff_summary when the user wants a concise summary of git diff output without loading raw diff into context.\n- Do not use this tool for write operations such as commit or push.\n- Use git_log_summary when the user wants a digest of recent commits without loading full log output into context.\n- Use git_blame_summary when the user asks who changed a file and wants a concise contributor summary.\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+              "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\README.md\n- Additional docs: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\docs\n- Examples: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+              "cwd": "<cwd>\n<temp>/pi-git-delegate-fixture-EalHbq\n</cwd>"
+            },
+            "timestamp": 1791794912353,
+            "toolsAdded": [
+              {
+                "name": "git_diff_summary",
+                "description": "Run git diff and delegate summarization to a subagent.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "ref": {
+                      "type": "string",
+                      "description": "Git ref to diff against (default: \"HEAD\")."
+                    },
+                    "provider": {
+                      "type": "string",
+                      "description": "Override provider for this call."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Override model for this call."
+                    }
+                  }
+                }
+              },
+              {
+                "name": "git_log_summary",
+                "description": "Run git log and delegate digest generation to a subagent.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "range": {
+                      "type": "string",
+                      "description": "Git log range (default: \"HEAD~10..HEAD\")."
+                    },
+                    "provider": {
+                      "type": "string",
+                      "description": "Override provider for this call."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Override model for this call."
+                    }
+                  }
+                }
+              },
+              {
+                "name": "git_blame_summary",
+                "description": "Run git blame and delegate contributor context to a subagent.",
+                "parameters": {
+                  "type": "object",
+                  "required": [
+                    "path"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "description": "File path to blame."
+                    },
+                    "ref": {
+                      "type": "string",
+                      "description": "Git ref (default: \"HEAD\")."
+                    },
+                    "provider": {
+                      "type": "string",
+                      "description": "Override provider for this call."
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Override model for this call."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "PI_SDK_SMOKE_RELOAD: invoke git diff summary after a fresh Pi process load."
+              }
+            ],
+            "timestamp": 1791794912352
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "PI_SDK_SMOKE_RELOAD: invoke git diff summary after a fresh Pi process load."
+              }
+            ],
+            "timestamp": 1791794912352
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "pi-sdk-smoke-8-tool-0",
+                "name": "git_diff_summary",
+                "arguments": {
+                  "ref": "HEAD",
+                  "provider": "pi-sdk-smoke",
+                  "model": "deterministic"
+                },
+                "partialArgs": "{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "pi-sdk-smoke",
+            "model": "deterministic",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1791794912365,
+            "responseId": "pi-sdk-smoke-8"
+          }
+        },
+        {
+          "type": "message_update",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "assistantMessageEvent": {
+            "type": "toolcall_start",
+            "contentIndex": 0,
+            "id": "pi-sdk-smoke-8-tool-0",
+            "toolName": "git_diff_summary"
+          }
+        },
+        {
+          "type": "message_update",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "assistantMessageEvent": {
+            "type": "toolcall_delta",
+            "contentIndex": 0,
+            "delta": "{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}"
+          }
+        },
+        {
+          "type": "message_update",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "assistantMessageEvent": {
+            "type": "toolcall_end",
+            "contentIndex": 0,
+            "toolCall": {
+              "type": "toolCall",
+              "id": "pi-sdk-smoke-8-tool-0",
+              "name": "git_diff_summary",
+              "arguments": {
+                "ref": "HEAD",
+                "provider": "pi-sdk-smoke",
+                "model": "deterministic"
+              }
+            }
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "pi-sdk-smoke-8-tool-0",
+                "name": "git_diff_summary",
+                "arguments": {
+                  "ref": "HEAD",
+                  "provider": "pi-sdk-smoke",
+                  "model": "deterministic"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "pi-sdk-smoke",
+            "model": "deterministic",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": 1791794912365,
+            "responseId": "pi-sdk-smoke-8",
+            "rawStopReason": "tool_calls",
+            "durationMs": 19,
+            "thinkingLevel": "off"
+          }
+        },
+        {
+          "type": "tool_execution_start",
+          "toolCallId": "pi-sdk-smoke-8-tool-0",
+          "toolName": "git_diff_summary",
+          "args": {
+            "ref": "HEAD",
+            "provider": "pi-sdk-smoke",
+            "model": "deterministic"
+          }
+        },
+        {
+          "type": "tool_execution_end",
+          "toolCallId": "pi-sdk-smoke-8-tool-0",
+          "toolName": "git_diff_summary",
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "Offline deterministic git summary."
+              }
+            ],
+            "details": {
+              "ref": "HEAD",
+              "provider": "pi-sdk-smoke",
+              "model": "deterministic"
+            }
+          },
+          "isError": false,
+          "durationMs": 347
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "toolResult",
+            "toolCallId": "pi-sdk-smoke-8-tool-0",
+            "toolName": "git_diff_summary",
+            "content": [
+              {
+                "type": "text",
+                "text": "Offline deterministic git summary."
+              }
+            ],
+            "details": {
+              "ref": "HEAD",
+              "provider": "pi-sdk-smoke",
+              "model": "deterministic"
+            },
+            "isError": false,
+            "durationMs": 347,
+            "timestamp": 1791794912733
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "toolResult",
+            "toolCallId": "pi-sdk-smoke-8-tool-0",
+            "toolName": "git_diff_summary",
+            "content": [
+              {
+                "type": "text",
+                "text": "Offline deterministic git summary."
+              }
+            ],
+            "details": {
+              "ref": "HEAD",
+              "provider": "pi-sdk-smoke",
+              "model": "deterministic"
+            },
+            "isError": false,
+            "durationMs": 347,
+            "timestamp": 1791794912733
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "pi-sdk-smoke-8-tool-0",
+                "name": "git_diff_summary",
+                "arguments": {
+                  "ref": "HEAD",
+                  "provider": "pi-sdk-smoke",
+                  "model": "deterministic"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "pi-sdk-smoke",
+            "model": "deterministic",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": 1791794912365,
+            "responseId": "pi-sdk-smoke-8",
+            "rawStopReason": "tool_calls",
+            "durationMs": 19,
+            "thinkingLevel": "off"
+          },
+          "toolResults": [
+            {
+              "role": "toolResult",
+              "toolCallId": "pi-sdk-smoke-8-tool-0",
+              "toolName": "git_diff_summary",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Offline deterministic git summary."
+                }
+              ],
+              "details": {
+                "ref": "HEAD",
+                "provider": "pi-sdk-smoke",
+                "model": "deterministic"
+              },
+              "isError": false,
+              "durationMs": 347,
+              "timestamp": 1791794912733
+            }
+          ]
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "The real Pi extension tool call completed."
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "pi-sdk-smoke",
+            "model": "deterministic",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1791794912735,
+            "responseId": "pi-sdk-smoke-10"
+          }
+        },
+        {
+          "type": "message_update",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "assistantMessageEvent": {
+            "type": "text_start",
+            "contentIndex": 0
+          }
+        },
+        {
+          "type": "message_update",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "assistantMessageEvent": {
+            "type": "text_delta",
+            "contentIndex": 0,
+            "delta": "The real Pi extension tool call completed."
+          }
+        },
+        {
+          "type": "message_update",
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "assistantMessageEvent": {
+            "type": "text_end",
+            "contentIndex": 0,
+            "content": "The real Pi extension tool call completed."
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "The real Pi extension tool call completed."
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "pi-sdk-smoke",
+            "model": "deterministic",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1791794912735,
+            "responseId": "pi-sdk-smoke-10",
+            "rawStopReason": "stop",
+            "durationMs": 4,
+            "thinkingLevel": "off"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "The real Pi extension tool call completed."
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "pi-sdk-smoke",
+            "model": "deterministic",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1791794912735,
+            "responseId": "pi-sdk-smoke-10",
+            "rawStopReason": "stop",
+            "durationMs": 4,
+            "thinkingLevel": "off"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+                "tools": "<tools>\n- git_diff_summary: git_diff_summary: summarize git diff via subagent\n- git_log_summary: git_log_summary: summarize recent commits via subagent\n- git_blame_summary: git_blame_summary: summarize file blame history via subagent\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+                "rules": "<rules>\n- Use git_diff_summary when the user wants a concise summary of git diff output without loading raw diff into context.\n- Do not use this tool for write operations such as commit or push.\n- Use git_log_summary when the user wants a digest of recent commits without loading full log output into context.\n- Use git_blame_summary when the user asks who changed a file and wants a concise contributor summary.\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+                "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\README.md\n- Additional docs: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\docs\n- Examples: <repo>\\node_modules\\@earendil-works\\pi-coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+                "cwd": "<cwd>\n<temp>/pi-git-delegate-fixture-EalHbq\n</cwd>"
+              },
+              "timestamp": 1791794912353,
+              "toolsAdded": [
+                {
+                  "name": "git_diff_summary",
+                  "description": "Run git diff and delegate summarization to a subagent.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "ref": {
+                        "type": "string",
+                        "description": "Git ref to diff against (default: \"HEAD\")."
+                      },
+                      "provider": {
+                        "type": "string",
+                        "description": "Override provider for this call."
+                      },
+                      "model": {
+                        "type": "string",
+                        "description": "Override model for this call."
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "git_log_summary",
+                  "description": "Run git log and delegate digest generation to a subagent.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "range": {
+                        "type": "string",
+                        "description": "Git log range (default: \"HEAD~10..HEAD\")."
+                      },
+                      "provider": {
+                        "type": "string",
+                        "description": "Override provider for this call."
+                      },
+                      "model": {
+                        "type": "string",
+                        "description": "Override model for this call."
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "git_blame_summary",
+                  "description": "Run git blame and delegate contributor context to a subagent.",
+                  "parameters": {
+                    "type": "object",
+                    "required": [
+                      "path"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "description": "File path to blame."
+                      },
+                      "ref": {
+                        "type": "string",
+                        "description": "Git ref (default: \"HEAD\")."
+                      },
+                      "provider": {
+                        "type": "string",
+                        "description": "Override provider for this call."
+                      },
+                      "model": {
+                        "type": "string",
+                        "description": "Override model for this call."
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "PI_SDK_SMOKE_RELOAD: invoke git diff summary after a fresh Pi process load."
+                }
+              ],
+              "timestamp": 1791794912352
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "toolCall",
+                  "id": "pi-sdk-smoke-8-tool-0",
+                  "name": "git_diff_summary",
+                  "arguments": {
+                    "ref": "HEAD",
+                    "provider": "pi-sdk-smoke",
+                    "model": "deterministic"
+                  }
+                }
+              ],
+              "api": "openai-completions",
+              "provider": "pi-sdk-smoke",
+              "model": "deterministic",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "toolUse",
+              "timestamp": 1791794912365,
+              "responseId": "pi-sdk-smoke-8",
+              "rawStopReason": "tool_calls",
+              "durationMs": 19,
+              "thinkingLevel": "off"
+            },
+            {
+              "role": "toolResult",
+              "toolCallId": "pi-sdk-smoke-8-tool-0",
+              "toolName": "git_diff_summary",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Offline deterministic git summary."
+                }
+              ],
+              "details": {
+                "ref": "HEAD",
+                "provider": "pi-sdk-smoke",
+                "model": "deterministic"
+              },
+              "isError": false,
+              "durationMs": 347,
+              "timestamp": 1791794912733
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The real Pi extension tool call completed."
+                }
+              ],
+              "api": "openai-completions",
+              "provider": "pi-sdk-smoke",
+              "model": "deterministic",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 1791794912735,
+              "responseId": "pi-sdk-smoke-10",
+              "rawStopReason": "stop",
+              "durationMs": 4,
+              "thinkingLevel": "off"
+            }
+          ],
+          "willRetry": false
+        },
+        {
+          "type": "agent_settled",
+          "aborted": false
+        }
+      ],
+      "commands": [
+        "git-delegate:configure",
+        "git-delegate:status"
+      ],
+      "prompt_response": {
+        "id": "smoke-prompt",
+        "type": "response",
+        "command": "prompt",
+        "success": true,
+        "data": {
+          "disposition": "started"
+        }
+      },
+      "exit_code": 0,
+      "natural_exit": true,
+      "stderr": "",
+      "failure": null,
+      "timeout_reached": false,
+      "cleanup_used": false,
+      "protocol_invalid": false,
+      "stdout": "{\"id\":\"smoke-get-commands\",\"type\":\"response\",\"command\":\"get_commands\",\"success\":true,\"data\":{\"commands\":[{\"name\":\"git-delegate:configure\",\"description\":\"Help set up pi-git-delegate models in .pi/settings.json\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}},{\"name\":\"git-delegate:status\",\"description\":\"Show current pi-git-delegate model routing settings\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}}]}}\n{\"id\":\"smoke-prompt\",\"type\":\"response\",\"command\":\"prompt\",\"success\":true,\"data\":{\"disposition\":\"started\"}}\n{\"type\":\"agent_start\"}\n{\"type\":\"turn_start\"}\n{\"type\":\"message_start\",\"message\":{\"role\":\"system\",\"content\":\"\",\"sections\":{\"preamble\":\"You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.\",\"tools\":\"<tools>\\n- git_diff_summary: git_diff_summary: summarize git diff via subagent\\n- git_log_summary: git_log_summary: summarize recent commits via subagent\\n- git_blame_summary: git_blame_summary: summarize file blame history via subagent\\n\\nIn addition to the tools above, you may have access to other custom tools depending on the project.\\n</tools>\",\"rules\":\"<rules>\\n- Use git_diff_summary when the user wants a concise summary of git diff output without loading raw diff into context.\\n- Do not use this tool for write operations such as commit or push.\\n- Use git_log_summary when the user wants a digest of recent commits without loading full log output into context.\\n- Use git_blame_summary when the user asks who changed a file and wants a concise contributor summary.\\n- Be concise in your responses\\n- Show file paths clearly when working with files\\n</rules>\",\"docs\":\"<docs>\\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\\n- Main documentation: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\README.md\\n- Additional docs: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\docs\\n- Examples: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\examples (extensions, custom tools, SDK)\\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\\n</docs>\",\"cwd\":\"<cwd>\\n<temp>/pi-git-delegate-fixture-EalHbq\\n</cwd>\"},\"timestamp\":1791794912353,\"toolsAdded\":[{\"name\":\"git_diff_summary\",\"description\":\"Run git diff and delegate summarization to a subagent.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\",\"description\":\"Git ref to diff against (default: \\\"HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}},{\"name\":\"git_log_summary\",\"description\":\"Run git log and delegate digest generation to a subagent.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"range\":{\"type\":\"string\",\"description\":\"Git log range (default: \\\"HEAD~10..HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}},{\"name\":\"git_blame_summary\",\"description\":\"Run git blame and delegate contributor context to a subagent.\",\"parameters\":{\"type\":\"object\",\"required\":[\"path\"],\"properties\":{\"path\":{\"type\":\"string\",\"description\":\"File path to blame.\"},\"ref\":{\"type\":\"string\",\"description\":\"Git ref (default: \\\"HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}}]}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"system\",\"content\":\"\",\"sections\":{\"preamble\":\"You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.\",\"tools\":\"<tools>\\n- git_diff_summary: git_diff_summary: summarize git diff via subagent\\n- git_log_summary: git_log_summary: summarize recent commits via subagent\\n- git_blame_summary: git_blame_summary: summarize file blame history via subagent\\n\\nIn addition to the tools above, you may have access to other custom tools depending on the project.\\n</tools>\",\"rules\":\"<rules>\\n- Use git_diff_summary when the user wants a concise summary of git diff output without loading raw diff into context.\\n- Do not use this tool for write operations such as commit or push.\\n- Use git_log_summary when the user wants a digest of recent commits without loading full log output into context.\\n- Use git_blame_summary when the user asks who changed a file and wants a concise contributor summary.\\n- Be concise in your responses\\n- Show file paths clearly when working with files\\n</rules>\",\"docs\":\"<docs>\\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\\n- Main documentation: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\README.md\\n- Additional docs: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\docs\\n- Examples: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\examples (extensions, custom tools, SDK)\\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\\n</docs>\",\"cwd\":\"<cwd>\\n<temp>/pi-git-delegate-fixture-EalHbq\\n</cwd>\"},\"timestamp\":1791794912353,\"toolsAdded\":[{\"name\":\"git_diff_summary\",\"description\":\"Run git diff and delegate summarization to a subagent.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\",\"description\":\"Git ref to diff against (default: \\\"HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}},{\"name\":\"git_log_summary\",\"description\":\"Run git log and delegate digest generation to a subagent.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"range\":{\"type\":\"string\",\"description\":\"Git log range (default: \\\"HEAD~10..HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}},{\"name\":\"git_blame_summary\",\"description\":\"Run git blame and delegate contributor context to a subagent.\",\"parameters\":{\"type\":\"object\",\"required\":[\"path\"],\"properties\":{\"path\":{\"type\":\"string\",\"description\":\"File path to blame.\"},\"ref\":{\"type\":\"string\",\"description\":\"Git ref (default: \\\"HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}}]}}\n{\"type\":\"message_start\",\"message\":{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"PI_SDK_SMOKE_RELOAD: invoke git diff summary after a fresh Pi process load.\"}],\"timestamp\":1791794912352}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"PI_SDK_SMOKE_RELOAD: invoke git diff summary after a fresh Pi process load.\"}],\"timestamp\":1791794912352}}\n{\"type\":\"message_start\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"pi-sdk-smoke-8-tool-0\",\"name\":\"git_diff_summary\",\"arguments\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"},\"partialArgs\":\"{\\\"ref\\\":\\\"HEAD\\\",\\\"provider\\\":\\\"pi-sdk-smoke\\\",\\\"model\\\":\\\"deterministic\\\"}\"}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"pending\",\"timestamp\":1791794912365,\"responseId\":\"pi-sdk-smoke-8\"}}\n{\"type\":\"message_update\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"assistantMessageEvent\":{\"type\":\"toolcall_start\",\"contentIndex\":0,\"id\":\"pi-sdk-smoke-8-tool-0\",\"toolName\":\"git_diff_summary\"}}\n{\"type\":\"message_update\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"assistantMessageEvent\":{\"type\":\"toolcall_delta\",\"contentIndex\":0,\"delta\":\"{\\\"ref\\\":\\\"HEAD\\\",\\\"provider\\\":\\\"pi-sdk-smoke\\\",\\\"model\\\":\\\"deterministic\\\"}\"}}\n{\"type\":\"message_update\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"assistantMessageEvent\":{\"type\":\"toolcall_end\",\"contentIndex\":0,\"toolCall\":{\"type\":\"toolCall\",\"id\":\"pi-sdk-smoke-8-tool-0\",\"name\":\"git_diff_summary\",\"arguments\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}}}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"pi-sdk-smoke-8-tool-0\",\"name\":\"git_diff_summary\",\"arguments\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"toolUse\",\"timestamp\":1791794912365,\"responseId\":\"pi-sdk-smoke-8\",\"rawStopReason\":\"tool_calls\",\"durationMs\":19,\"thinkingLevel\":\"off\"}}\n{\"type\":\"tool_execution_start\",\"toolCallId\":\"pi-sdk-smoke-8-tool-0\",\"toolName\":\"git_diff_summary\",\"args\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}}\n{\"type\":\"tool_execution_end\",\"toolCallId\":\"pi-sdk-smoke-8-tool-0\",\"toolName\":\"git_diff_summary\",\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Offline deterministic git summary.\"}],\"details\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}},\"isError\":false,\"durationMs\":347}\n{\"type\":\"message_start\",\"message\":{\"role\":\"toolResult\",\"toolCallId\":\"pi-sdk-smoke-8-tool-0\",\"toolName\":\"git_diff_summary\",\"content\":[{\"type\":\"text\",\"text\":\"Offline deterministic git summary.\"}],\"details\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"},\"isError\":false,\"durationMs\":347,\"timestamp\":1791794912733}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"toolResult\",\"toolCallId\":\"pi-sdk-smoke-8-tool-0\",\"toolName\":\"git_diff_summary\",\"content\":[{\"type\":\"text\",\"text\":\"Offline deterministic git summary.\"}],\"details\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"},\"isError\":false,\"durationMs\":347,\"timestamp\":1791794912733}}\n{\"type\":\"turn_end\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"pi-sdk-smoke-8-tool-0\",\"name\":\"git_diff_summary\",\"arguments\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"toolUse\",\"timestamp\":1791794912365,\"responseId\":\"pi-sdk-smoke-8\",\"rawStopReason\":\"tool_calls\",\"durationMs\":19,\"thinkingLevel\":\"off\"},\"toolResults\":[{\"role\":\"toolResult\",\"toolCallId\":\"pi-sdk-smoke-8-tool-0\",\"toolName\":\"git_diff_summary\",\"content\":[{\"type\":\"text\",\"text\":\"Offline deterministic git summary.\"}],\"details\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"},\"isError\":false,\"durationMs\":347,\"timestamp\":1791794912733}]}\n{\"type\":\"turn_start\"}\n{\"type\":\"message_start\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"The real Pi extension tool call completed.\"}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"pending\",\"timestamp\":1791794912735,\"responseId\":\"pi-sdk-smoke-10\"}}\n{\"type\":\"message_update\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"assistantMessageEvent\":{\"type\":\"text_start\",\"contentIndex\":0}}\n{\"type\":\"message_update\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"assistantMessageEvent\":{\"type\":\"text_delta\",\"contentIndex\":0,\"delta\":\"The real Pi extension tool call completed.\"}}\n{\"type\":\"message_update\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"assistantMessageEvent\":{\"type\":\"text_end\",\"contentIndex\":0,\"content\":\"The real Pi extension tool call completed.\"}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"The real Pi extension tool call completed.\"}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"stop\",\"timestamp\":1791794912735,\"responseId\":\"pi-sdk-smoke-10\",\"rawStopReason\":\"stop\",\"durationMs\":4,\"thinkingLevel\":\"off\"}}\n{\"type\":\"turn_end\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"The real Pi extension tool call completed.\"}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"stop\",\"timestamp\":1791794912735,\"responseId\":\"pi-sdk-smoke-10\",\"rawStopReason\":\"stop\",\"durationMs\":4,\"thinkingLevel\":\"off\"},\"toolResults\":[]}\n{\"type\":\"agent_end\",\"messages\":[{\"role\":\"system\",\"content\":\"\",\"sections\":{\"preamble\":\"You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.\",\"tools\":\"<tools>\\n- git_diff_summary: git_diff_summary: summarize git diff via subagent\\n- git_log_summary: git_log_summary: summarize recent commits via subagent\\n- git_blame_summary: git_blame_summary: summarize file blame history via subagent\\n\\nIn addition to the tools above, you may have access to other custom tools depending on the project.\\n</tools>\",\"rules\":\"<rules>\\n- Use git_diff_summary when the user wants a concise summary of git diff output without loading raw diff into context.\\n- Do not use this tool for write operations such as commit or push.\\n- Use git_log_summary when the user wants a digest of recent commits without loading full log output into context.\\n- Use git_blame_summary when the user asks who changed a file and wants a concise contributor summary.\\n- Be concise in your responses\\n- Show file paths clearly when working with files\\n</rules>\",\"docs\":\"<docs>\\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\\n- Main documentation: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\README.md\\n- Additional docs: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\docs\\n- Examples: <repo>\\\\node_modules\\\\@earendil-works\\\\pi-coding-agent\\\\examples (extensions, custom tools, SDK)\\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\\n</docs>\",\"cwd\":\"<cwd>\\n<temp>/pi-git-delegate-fixture-EalHbq\\n</cwd>\"},\"timestamp\":1791794912353,\"toolsAdded\":[{\"name\":\"git_diff_summary\",\"description\":\"Run git diff and delegate summarization to a subagent.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\",\"description\":\"Git ref to diff against (default: \\\"HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}},{\"name\":\"git_log_summary\",\"description\":\"Run git log and delegate digest generation to a subagent.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"range\":{\"type\":\"string\",\"description\":\"Git log range (default: \\\"HEAD~10..HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}},{\"name\":\"git_blame_summary\",\"description\":\"Run git blame and delegate contributor context to a subagent.\",\"parameters\":{\"type\":\"object\",\"required\":[\"path\"],\"properties\":{\"path\":{\"type\":\"string\",\"description\":\"File path to blame.\"},\"ref\":{\"type\":\"string\",\"description\":\"Git ref (default: \\\"HEAD\\\").\"},\"provider\":{\"type\":\"string\",\"description\":\"Override provider for this call.\"},\"model\":{\"type\":\"string\",\"description\":\"Override model for this call.\"}}}}]},{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"PI_SDK_SMOKE_RELOAD: invoke git diff summary after a fresh Pi process load.\"}],\"timestamp\":1791794912352},{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"pi-sdk-smoke-8-tool-0\",\"name\":\"git_diff_summary\",\"arguments\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"}}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"toolUse\",\"timestamp\":1791794912365,\"responseId\":\"pi-sdk-smoke-8\",\"rawStopReason\":\"tool_calls\",\"durationMs\":19,\"thinkingLevel\":\"off\"},{\"role\":\"toolResult\",\"toolCallId\":\"pi-sdk-smoke-8-tool-0\",\"toolName\":\"git_diff_summary\",\"content\":[{\"type\":\"text\",\"text\":\"Offline deterministic git summary.\"}],\"details\":{\"ref\":\"HEAD\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\"},\"isError\":false,\"durationMs\":347,\"timestamp\":1791794912733},{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"The real Pi extension tool call completed.\"}],\"api\":\"openai-completions\",\"provider\":\"pi-sdk-smoke\",\"model\":\"deterministic\",\"usage\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":0,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"stop\",\"timestamp\":1791794912735,\"responseId\":\"pi-sdk-smoke-10\",\"rawStopReason\":\"stop\",\"durationMs\":4,\"thinkingLevel\":\"off\"}],\"willRetry\":false}\n{\"type\":\"agent_settled\",\"aborted\":false}\n",
+      "exit_signal": null
+    }
+  ],
+  "deterministic_provider_requests": [
+    {
+      "kind": "feature-driver",
+      "test_prompt": "RELOAD",
+      "tool_names": [
+        "git_diff_summary",
+        "git_log_summary",
+        "git_blame_summary"
+      ],
+      "loopback": true,
+      "model": "deterministic"
+    },
+    {
+      "kind": "subagent",
+      "test_prompt": null,
+      "tool_names": [
+        "read",
+        "bash",
+        "edit",
+        "write"
+      ],
+      "loopback": true,
+      "model": "deterministic"
+    },
+    {
+      "kind": "feature-driver",
+      "test_prompt": "RELOAD",
+      "tool_names": [
+        "git_diff_summary",
+        "git_log_summary",
+        "git_blame_summary"
+      ],
+      "loopback": true,
+      "model": "deterministic"
+    }
+  ]
+}

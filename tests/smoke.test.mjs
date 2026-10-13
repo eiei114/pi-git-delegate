@@ -27,13 +27,18 @@ test("package uses public publish config", () => {
 test("ci workflow runs tests on push and pull_request", () => {
   assert.match(ciWorkflow, /on:\s*[\s\S]*push:/);
   assert.match(ciWorkflow, /pull_request:/);
+  assert.match(ciWorkflow, /os: \[ubuntu-latest, windows-latest\]/);
   assert.match(ciWorkflow, /npm run ci/);
+  assert.match(packageJson.scripts.ci, /npm run smoke:pi/);
 });
 
-test("roadmap release status tracks package version", () => {
+test("roadmap distinguishes the latest release from the prepared package version", () => {
   const version = packageJson.version;
-  assert.ok(roadmap.includes(`| Latest release | **v${version}**`));
-  assert.ok(roadmap.includes(`| \`package.json\` version | \`${version}\``));
+  const latestRelease = roadmap.match(/\| Latest release \| \*\*v([0-9]+\.[0-9]+\.[0-9]+)\*\*/)?.[1];
+  assert.ok(latestRelease, "roadmap must identify the latest published release");
+  assert.ok(roadmap.includes(`| \`package.json\` version | \`${version}\` (prepared for release; not yet published) |`));
+  assert.ok(changelog.includes(`## [${version}]`));
+  assert.notEqual(latestRelease, version, "SDK maintenance must not claim the unreleased bump was published");
 });
 
 test("roadmap keeps at least three active candidate seeds", () => {
@@ -78,7 +83,18 @@ test("template includes npm release workflow handoff", () => {
   assert.match(autoReleaseWorkflow, /actions:\s*write/);
   assert.match(autoReleaseWorkflow, /contents:\s*write/);
   assert.match(autoReleaseWorkflow, /gh workflow run publish\.yml/);
+  const triggerPattern = /^on:\r?\n([\s\S]*?)^permissions:/m;
+  const releaseTriggers = autoReleaseWorkflow.match(triggerPattern)?.[1];
+  assert.equal(releaseTriggers?.trim(), "workflow_dispatch:");
+  assert.equal(autoReleaseWorkflow.replace(/\r?\n/g, "\r\n").match(triggerPattern)?.[1]?.trim(), "workflow_dispatch:");
+  assert.match(autoReleaseWorkflow, /if: github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main'/);
+  assert.ok(autoReleaseWorkflow.includes("grep -Eq '^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$'"));
   assert.match(publishWorkflow, /id-token:\s*write/);
   assert.match(publishWorkflow, /workflow_dispatch:/);
   assert.match(publishWorkflow, /npm publish --access public/);
+  const publishTriggers = publishWorkflow.match(triggerPattern)?.[1] ?? "";
+  assert.doesNotMatch(publishTriggers, /branches:\s*\n\s*- main|paths:/);
+  const windowsPublishTriggers = publishWorkflow.replace(/\r?\n/g, "\r\n").match(triggerPattern)?.[1] ?? "";
+  assert.match(windowsPublishTriggers, /workflow_dispatch:/);
+  assert.doesNotMatch(windowsPublishTriggers, /branches:\s*\r?\n\s*- main|paths:/);
 });

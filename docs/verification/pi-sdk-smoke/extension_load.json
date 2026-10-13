@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "case": "extension_load",
+  "command": "npm run smoke:pi",
+  "captures": [
+    {
+      "records": [
+        {
+          "id": "smoke-get-commands",
+          "type": "response",
+          "command": "get_commands",
+          "success": true,
+          "data": {
+            "commands": [
+              {
+                "name": "git-delegate:configure",
+                "description": "Help set up pi-git-delegate models in .pi/settings.json",
+                "source": "extension",
+                "sourceInfo": {
+                  "path": "<repo>\\extensions\\index.ts",
+                  "source": "cli",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              },
+              {
+                "name": "git-delegate:status",
+                "description": "Show current pi-git-delegate model routing settings",
+                "source": "extension",
+                "sourceInfo": {
+                  "path": "<repo>\\extensions\\index.ts",
+                  "source": "cli",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "commands": [
+        "git-delegate:configure",
+        "git-delegate:status"
+      ],
+      "prompt_response": null,
+      "exit_code": 0,
+      "natural_exit": true,
+      "stderr": "",
+      "failure": null,
+      "timeout_reached": false,
+      "cleanup_used": false,
+      "protocol_invalid": false,
+      "stdout": "{\"id\":\"smoke-get-commands\",\"type\":\"response\",\"command\":\"get_commands\",\"success\":true,\"data\":{\"commands\":[{\"name\":\"git-delegate:configure\",\"description\":\"Help set up pi-git-delegate models in .pi/settings.json\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}},{\"name\":\"git-delegate:status\",\"description\":\"Show current pi-git-delegate model routing settings\",\"source\":\"extension\",\"sourceInfo\":{\"path\":\"<repo>\\\\extensions\\\\index.ts\",\"source\":\"cli\",\"scope\":\"temporary\",\"origin\":\"top-level\"}}]}}\n",
+      "exit_signal": null
+    }
+  ],
+  "deterministic_provider_requests": []
+}
