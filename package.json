@@ -1,6 +1,6 @@
 {
   "name": "pi-git-delegate",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Pi extension: delegate git operations (diff/log/blame) to cheaper models via subagents, saving costs and keeping parent context clean.",
   "type": "module",
   "license": "MIT",
@@ -49,10 +49,10 @@
     "typebox": "*"
   },
   "devDependencies": {
-    "@earendil-works/pi-agent-core": "1.1.0",
-    "@earendil-works/pi-ai": "1.1.0",
-    "@earendil-works/pi-coding-agent": "1.1.0",
-    "@earendil-works/pi-tui": "1.1.0",
+    "@earendil-works/pi-agent-core": "1.2.0",
+    "@earendil-works/pi-ai": "1.2.0",
+    "@earendil-works/pi-coding-agent": "1.2.0",
+    "@earendil-works/pi-tui": "1.2.0",
     "typebox": "latest",
     "@types/node": "^26.1.0",
     "typescript": "^7.0.2"
