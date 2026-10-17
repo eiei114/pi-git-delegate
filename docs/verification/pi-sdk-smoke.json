@@ -2,10 +2,10 @@
   "schema_version": 1,
   "verification_contract": "pi-sdk-behavior-v2",
   "sdk_versions": {
-    "@earendil-works/pi-agent-core": "1.1.0",
-    "@earendil-works/pi-ai": "1.1.0",
-    "@earendil-works/pi-coding-agent": "1.1.0",
-    "@earendil-works/pi-tui": "1.1.0"
+    "@earendil-works/pi-agent-core": "1.2.0",
+    "@earendil-works/pi-ai": "1.2.0",
+    "@earendil-works/pi-coding-agent": "1.2.0",
+    "@earendil-works/pi-tui": "1.2.0"
   },
   "platform": "win32",
   "model_inference": "No paid/external inference; actual Pi and extension call a deterministic OpenAI-compatible test model bound only to loopback.",
@@ -94,7 +94,7 @@
         {
           "id": "native_shell_boundary",
           "expected": "The native host shell launches the locally pinned Pi CLI and returns exactly its SDK version",
-          "observed": "{\"output\":\"1.1.0\",\"expected_version\":\"1.1.0\",\"exit_code\":0}",
+          "observed": "{\"output\":\"1.2.0\",\"expected_version\":\"1.2.0\",\"exit_code\":0}",
           "passed": true
         }
       ]

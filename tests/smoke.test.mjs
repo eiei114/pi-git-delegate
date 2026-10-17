@@ -34,10 +34,11 @@ test("ci workflow runs tests on push and pull_request", () => {
 
 test("roadmap distinguishes the latest release from the prepared package version", () => {
   const version = packageJson.version;
+  const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const latestRelease = roadmap.match(/\| Latest release \| \*\*v([0-9]+\.[0-9]+\.[0-9]+)\*\*/)?.[1];
   assert.ok(latestRelease, "roadmap must identify the latest published release");
   assert.ok(roadmap.includes(`| \`package.json\` version | \`${version}\` (prepared for release; not yet published) |`));
-  assert.ok(changelog.includes(`## [${version}]`));
+  assert.doesNotMatch(changelog, new RegExp(`^## \\[${escapedVersion}\\]`, "m"));
   assert.notEqual(latestRelease, version, "SDK maintenance must not claim the unreleased bump was published");
 });
 
@@ -69,14 +70,13 @@ test("roadmap open PRs row avoids stale hardcoded PR numbers", () => {
   );
 });
 
-test("changelog documents shipped releases and keeps Unreleased empty", () => {
-  const version = packageJson.version;
-  const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  assert.match(changelog, new RegExp(`## \\[Unreleased\\]\\s*\\n\\s*## \\[${escapedVersion}\\]`));
+test("changelog documents shipped releases and keeps prepared changes under Unreleased", () => {
   assert.match(changelog, /## \[0\.2\.2\] - 2026-07-04[\s\S]*?Buy Me a Coffee[\s\S]*?(?=## \[|$)/);
-  assert.match(changelog, new RegExp(`## \\[${escapedVersion}\\]`));
   const unreleasedBody = changelog.split("## [Unreleased]")[1]?.split(/^## \[/m)[0] ?? "";
-  assert.match(unreleasedBody.trim(), /^$/);
+  assert.match(
+    unreleasedBody,
+    /Pin `@earendil-works\/pi-\*` devDependencies to `1\.2\.0` and verify extension behavior against the actual Pi host\./,
+  );
 });
 
 test("template includes npm release workflow handoff", () => {

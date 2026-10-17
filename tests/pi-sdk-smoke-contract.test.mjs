@@ -13,7 +13,7 @@ const toolEvent = (toolName, text = DELEGATED_SUMMARY, details = {}, isError = f
 
 test("behavior-v2 contract and frozen SDK inventory are exact", () => {
   assert.equal(VERIFICATION_CONTRACT, "pi-sdk-behavior-v2");
-  assert.deepEqual(Object.values(SDK_VERSIONS), ["1.1.0", "1.1.0", "1.1.0", "1.1.0"]);
+  assert.deepEqual(Object.values(SDK_VERSIONS), ["1.2.0", "1.2.0", "1.2.0", "1.2.0"]);
   assert.deepEqual(EXPECTED_TOOLS, ["git_diff_summary", "git_log_summary", "git_blame_summary"]);
 });
 
@@ -78,10 +78,10 @@ test("reload requires second-process registration, a feature response, and natur
 });
 
 test("native shell case checks the exact pinned version rather than a substring", () => {
-  assert.equal(behaviorAssertions("host_shell", { stdout: "1.1.0\r\n", expected_version: "1.1.0",
+  assert.equal(behaviorAssertions("host_shell", { stdout: "1.2.0\r\n", expected_version: "1.2.0",
     exit_code: 0, natural_exit: true })[0].passed, true);
-  for (const stdout of ["", "11.1.0", "1.1.0 error"]) {
-    assert.equal(behaviorAssertions("host_shell", { stdout, expected_version: "1.1.0", exit_code: 0,
+  for (const stdout of ["", "11.2.0", "1.2.0 error"]) {
+    assert.equal(behaviorAssertions("host_shell", { stdout, expected_version: "1.2.0", exit_code: 0,
       natural_exit: true })[0].passed, false);
   }
 });
