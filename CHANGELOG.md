@@ -2,8 +2,6 @@
 
 ## [Unreleased]
 
-## [0.2.13] - 2026-10-16
-
 ### Changed
 
 - Pin `@earendil-works/pi-*` devDependencies to `1.2.0` and verify extension behavior against the actual Pi host.
