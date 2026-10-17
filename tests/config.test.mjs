@@ -77,6 +77,23 @@ test("loadGitDelegateConfig keeps explicit null diff route over diffModel shorth
   assert.deepEqual(config?.diff, { provider: null, model: null });
 });
 
+test("loadGitDelegateConfig falls back to diffModel when the nested diff route is malformed", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
+  writeProjectSettings(cwd, {
+    "pi-git-delegate": {
+      diff: ["not", "a route"],
+      diffModel: "fallback-model",
+    },
+  });
+
+  const config = loadGitDelegateConfig(cwd);
+  assert.deepEqual(config?.diff, { provider: null, model: "fallback-model" });
+  assert.deepEqual(resolveSubagentRoute("git_diff_summary", config), {
+    provider: undefined,
+    model: "fallback-model",
+  });
+});
+
 test("loadGitDelegateConfig reads logModel shorthand for git_log_summary routing", () => {
   const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-config-"));
   writeProjectSettings(cwd, {
