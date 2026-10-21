@@ -2,13 +2,12 @@ import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import {
   createGitSummaryPipelineOptions,
   executeGitSummaryPipeline,
+  type GitSummaryToolParams,
 } from "../git-summary-pipeline.ts";
 import { DIFF_SUMMARY_PROMPT } from "../prompts.ts";
 
-export interface GitDiffSummaryParams {
+export interface GitDiffSummaryParams extends GitSummaryToolParams {
   ref?: string;
-  provider?: string;
-  model?: string;
 }
 
 export async function executeGitDiffSummary(

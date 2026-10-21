@@ -2,14 +2,13 @@ import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import {
   createGitSummaryPipelineOptions,
   executeGitSummaryPipeline,
+  type GitSummaryToolParams,
 } from "../git-summary-pipeline.ts";
 import { textResult } from "../tool-result.ts";
 import { LOG_SUMMARY_PROMPT } from "../prompts.ts";
 
-export interface GitLogSummaryParams {
+export interface GitLogSummaryParams extends GitSummaryToolParams {
   range?: string;
-  provider?: string;
-  model?: string;
 }
 
 export async function executeGitLogSummary(

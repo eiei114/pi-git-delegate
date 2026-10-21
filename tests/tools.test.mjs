@@ -130,3 +130,24 @@ test("git_blame_summary uses blameModel config and lets model parameter override
   const overridden = await executeGitBlameSummary({ path: "README.md", model: "override-model" }, { cwd });
   assert.equal(overridden.details.model, "override-model");
 });
+
+test("all git summary tools preserve per-call provider and model overrides", async () => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "README.md"), "first revision\n", "utf8");
+  commitAll(cwd, "initial");
+  writeFileSync(join(cwd, "README.md"), "second revision\n", "utf8");
+  commitAll(cwd, "update README");
+  writeFileSync(join(cwd, "README.md"), "working tree change\n", "utf8");
+
+  const overrides = { provider: "override-provider", model: "override-model" };
+  const results = [
+    await executeGitDiffSummary({ ref: "HEAD", ...overrides }, { cwd }),
+    await executeGitLogSummary({ range: "HEAD~1..HEAD", ...overrides }, { cwd }),
+    await executeGitBlameSummary({ path: "README.md", ...overrides }, { cwd }),
+  ];
+
+  for (const result of results) {
+    assert.equal(result.details.provider, overrides.provider);
+    assert.equal(result.details.model, overrides.model);
+  }
+});

@@ -2,15 +2,14 @@ import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import {
   createGitSummaryPipelineOptions,
   executeGitSummaryPipeline,
+  type GitSummaryToolParams,
 } from "../git-summary-pipeline.ts";
 import { textResult } from "../tool-result.ts";
 import { BLAME_SUMMARY_PROMPT } from "../prompts.ts";
 
-export interface GitBlameSummaryParams {
+export interface GitBlameSummaryParams extends GitSummaryToolParams {
   path: string;
   ref?: string;
-  provider?: string;
-  model?: string;
 }
 
 export async function executeGitBlameSummary(
