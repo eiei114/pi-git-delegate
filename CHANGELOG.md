@@ -5,6 +5,7 @@
 ### Changed
 
 - Pin `@earendil-works/pi-*` devDependencies to `1.2.0` and verify extension behavior against the actual Pi host.
+- Share per-call provider/model parameter types across the three git summary tools.
 
 ## [0.2.12] - 2026-10-12
 
