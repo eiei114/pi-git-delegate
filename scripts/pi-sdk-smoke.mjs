@@ -13,6 +13,8 @@ const ROOT = resolve(import.meta.dirname, "..");
 const REPORT_PATH = resolve(ROOT, "docs/verification/pi-sdk-smoke.json");
 const ARTIFACT_DIR = resolve(ROOT, "docs/verification/pi-sdk-smoke");
 const PROBE_TIMEOUT_MS = 15_000;
+// Allow for cold native-shell startup on hosted Windows while keeping a hard deadline.
+const NATIVE_SHELL_TIMEOUT_MS = 30_000;
 const CLEANUP_GRACE_MS = 1_000;
 const OWNED_TREE_CLEANUP_MS = 700;
 const MAX_OUTPUT_BYTES = 1024 * 1024;
@@ -323,9 +325,9 @@ async function runNativeHostShell({ cli, agentDir, gitConfig, expectedVersion })
     timedOut = true;
     cleanupUsed = true;
     killOwnedTree(child);
-  }, PROBE_TIMEOUT_MS);
+  }, NATIVE_SHELL_TIMEOUT_MS);
   if (!closeInfo) {
-    const completed = await Promise.race([closed.then(() => true), delay(PROBE_TIMEOUT_MS).then(() => false)]);
+    const completed = await Promise.race([closed.then(() => true), delay(NATIVE_SHELL_TIMEOUT_MS).then(() => false)]);
     if (!completed) {
       timedOut = true;
       cleanupUsed = true;
