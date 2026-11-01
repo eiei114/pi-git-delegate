@@ -62,13 +62,7 @@ pi -e .
 
 ## Quick start
 
-After installing (see above) or running `pi -e .` from this repo, call each tool in Pi:
-
-```txt
-git_diff_summary({ref: "HEAD~3"})
-git_log_summary({range: "main..feature"})
-git_blame_summary({path: "src/auth.ts"})
-```
+After installing (see above) or running `pi -e .` from this repo, start Pi from the Git repository you want to inspect. Follow [Tool examples](#tool-examples) to ask Pi to use the tools.
 
 The tools are registered automatically — no extra setup required.
 
