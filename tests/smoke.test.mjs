@@ -75,7 +75,7 @@ test("changelog documents shipped releases and keeps prepared changes under Unre
   const unreleasedBody = changelog.split("## [Unreleased]")[1]?.split(/^## \[/m)[0] ?? "";
   assert.match(
     unreleasedBody,
-    /Pin `@earendil-works\/pi-\*` devDependencies to `1\.2\.0` and verify extension behavior against the actual Pi host\./,
+    /derive smoke expectations from the exact `package\.json` pins so Dependabot updates remain verifiable against the actual Pi host/i,
   );
 });
 

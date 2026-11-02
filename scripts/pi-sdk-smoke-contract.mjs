@@ -1,10 +1,15 @@
+import { readFileSync } from "node:fs";
+
 export const VERIFICATION_CONTRACT = "pi-sdk-behavior-v2";
-export const SDK_VERSIONS = {
-  "@earendil-works/pi-agent-core": "1.2.0",
-  "@earendil-works/pi-ai": "1.2.0",
-  "@earendil-works/pi-coding-agent": "1.2.0",
-  "@earendil-works/pi-tui": "1.2.0",
-};
+const SDK_PACKAGE_NAMES = [
+  "@earendil-works/pi-agent-core",
+  "@earendil-works/pi-ai",
+  "@earendil-works/pi-coding-agent",
+  "@earendil-works/pi-tui",
+];
+const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+export const SDK_VERSIONS = Object.fromEntries(SDK_PACKAGE_NAMES.map((name) =>
+  [name, packageJson.devDependencies?.[name]]));
 
 export const EXPECTED_COMMANDS = ["git-delegate:configure", "git-delegate:status"];
 export const EXPECTED_TOOLS = ["git_diff_summary", "git_log_summary", "git_blame_summary"];

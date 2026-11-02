@@ -1,19 +1,29 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   behaviorAssertions, DELEGATED_SUMMARY, EXPECTED_COMMANDS, EXPECTED_TOOLS, parseJsonLines,
   SDK_VERSIONS, VERIFICATION_CONTRACT,
 } from "../scripts/pi-sdk-smoke-contract.mjs";
 
+const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+const SDK_PACKAGE_NAMES = [
+  "@earendil-works/pi-agent-core",
+  "@earendil-works/pi-ai",
+  "@earendil-works/pi-coding-agent",
+  "@earendil-works/pi-tui",
+];
 const commandObservation = (commands = EXPECTED_COMMANDS, exit_code = 0) => ({ commands, exit_code, natural_exit: exit_code === 0 });
 const toolEvent = (toolName, text = DELEGATED_SUMMARY, details = {}, isError = false) => ({
   type: "tool_execution_end", toolName, isError,
   result: { content: [{ type: "text", text }], details },
 });
 
-test("behavior-v2 contract and frozen SDK inventory are exact", () => {
+test("behavior-v2 contract derives the exact SDK inventory from package.json", () => {
   assert.equal(VERIFICATION_CONTRACT, "pi-sdk-behavior-v2");
-  assert.deepEqual(Object.values(SDK_VERSIONS), ["1.2.0", "1.2.0", "1.2.0", "1.2.0"]);
+  assert.deepEqual(Object.keys(SDK_VERSIONS), SDK_PACKAGE_NAMES);
+  assert.deepEqual(SDK_VERSIONS, Object.fromEntries(SDK_PACKAGE_NAMES.map((name) =>
+    [name, packageJson.devDependencies[name]])));
   assert.deepEqual(EXPECTED_TOOLS, ["git_diff_summary", "git_log_summary", "git_blame_summary"]);
 });
 
@@ -78,10 +88,11 @@ test("reload requires second-process registration, a feature response, and natur
 });
 
 test("native shell case checks the exact pinned version rather than a substring", () => {
-  assert.equal(behaviorAssertions("host_shell", { stdout: "1.2.0\r\n", expected_version: "1.2.0",
+  const expectedVersion = SDK_VERSIONS["@earendil-works/pi-coding-agent"];
+  assert.equal(behaviorAssertions("host_shell", { stdout: `${expectedVersion}\r\n`, expected_version: expectedVersion,
     exit_code: 0, natural_exit: true })[0].passed, true);
-  for (const stdout of ["", "11.2.0", "1.2.0 error"]) {
-    assert.equal(behaviorAssertions("host_shell", { stdout, expected_version: "1.2.0", exit_code: 0,
+  for (const stdout of ["", `1${expectedVersion}`, `${expectedVersion} error`]) {
+    assert.equal(behaviorAssertions("host_shell", { stdout, expected_version: expectedVersion, exit_code: 0,
       natural_exit: true })[0].passed, false);
   }
 });
