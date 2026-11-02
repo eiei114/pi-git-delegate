@@ -62,13 +62,7 @@ pi -e .
 
 ## Quick start
 
-After installing (see above) or running `pi -e .` from this repo, call each tool in Pi:
-
-```txt
-git_diff_summary({ref: "HEAD~3"})
-git_log_summary({range: "main..feature"})
-git_blame_summary({path: "src/auth.ts"})
-```
+After installing (see above) or running `pi -e .` from this repo, start Pi from the Git repository you want to inspect. Follow [Tool examples](#tool-examples) to ask Pi to use the tools.
 
 The tools are registered automatically — no extra setup required.
 
@@ -104,18 +98,13 @@ Manual example for `.pi/settings.json`:
 
 ## Tool examples
 
-Once installed, the tools are available automatically. Pi calls them via `pi list`.
+Install the package with `pi install npm:pi-git-delegate`, then start Pi from the Git repository you want to inspect. In Pi chat, ask:
 
 ```txt
-git_diff_summary({ref: "HEAD~3"})
-→ "feat: add avatar upload with resize (3 files, 2 commits)"
-
-git_log_summary({range: "main..feature"})
-→ "3 commits: feat(avatar), fix(crop), chore(deps)"
-
-git_blame_summary({path: "src/auth.ts"})
-→ "src/auth.ts: 3 authors, most recent by @alice (2026-06-01)"
+Summarize my current working-tree changes using git_diff_summary with ref set to HEAD.
 ```
+
+`git_diff_summary` uses `HEAD` by default and summarizes `git diff HEAD`. If there are no tracked changes, it returns `No changes found.` without starting a subagent; edit a tracked file first to see a summary. The other tools also inspect the current Git repository: give `git_log_summary` a commit range that exists there, or `git_blame_summary` a tracked file path. `pi list` only lists installed packages; ask Pi in chat to use a tool.
 
 ## Package contents
 

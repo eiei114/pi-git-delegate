@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Clarify how to invoke the git summary tools in Pi and document the `git_diff_summary` default.
 - Pin `@earendil-works/pi-*` devDependencies to `1.2.0` and verify extension behavior against the actual Pi host.
 - Share per-call provider/model parameter types across the three git summary tools.
 
