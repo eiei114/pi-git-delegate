@@ -22,6 +22,9 @@ function createTempGitRepo() {
   execSync("git init", { cwd, stdio: "ignore" });
   execSync('git config user.email "test@example.com"', { cwd, stdio: "ignore" });
   execSync('git config user.name "Test User"', { cwd, stdio: "ignore" });
+  // A developer's global `blame.showEmail` would replace author names with
+  // emails in blame output and break the name assertions below.
+  execSync("git config blame.showEmail false", { cwd, stdio: "ignore" });
   tempRepos.push(cwd);
   return cwd;
 }
