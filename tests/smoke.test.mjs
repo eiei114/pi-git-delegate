@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
@@ -57,6 +57,21 @@ test("roadmap keeps at least three active candidate seeds", () => {
     activeSeeds.length >= 3,
     `Candidate maintenance seeds must contain at least three active (- [ ]) seeds; found ${activeSeeds.length}`,
   );
+});
+
+test("roadmap test-file inventory matches the files node --test runs", async () => {
+  const testFiles = (await readdir(new URL("../tests", import.meta.url)))
+    .filter((name) => name.endsWith(".test.mjs"))
+    .map((name) => name.slice(0, -'.test.mjs'.length))
+    .sort();
+  const row = roadmap.match(/^\| Test files \| (\d+) \(([^)]*)\) \|$/m);
+  assert.ok(row, "Test files row missing from ROADMAP.md");
+  const declared = row[2]
+    .split(",")
+    .map((name) => name.trim().replaceAll("`", ""))
+    .sort();
+  assert.equal(Number(row[1]), testFiles.length, "Test files count must match tests/*.test.mjs");
+  assert.deepEqual(declared, testFiles, "Test files row must list every tests/*.test.mjs entry");
 });
 
 test("roadmap open PRs row avoids stale hardcoded PR numbers", () => {

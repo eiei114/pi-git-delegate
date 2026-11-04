@@ -35,12 +35,12 @@ unless they directly serve the cost/context-leverage thesis.
 | `package.json` version | `0.2.16` (prepared for release; not yet published) |
 | Release model | npm Trusted Publishing via GitHub Actions; manual release dispatch on `main` after authorization |
 | CI | `npm run ci` = `typecheck` + `node --test` + actual Pi SDK smoke + `pack:check` |
-| Test files | 11 (`commands`, `config`, `docs-examples`, `git-exec`, `git-summary-pipeline`, `pi-sdk-smoke-contract`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
+| Test files | 12 (`commands`, `config`, `docs-examples`, `git-exec`, `git-summary-pipeline`, `pi-sdk-smoke-artifacts`, `pi-sdk-smoke-contract`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
 | Open PRs | 1 (grouped Dependabot devDependency update) |
 | DevDependencies | `@earendil-works/*` 1.2.0; `@types/node` ^26.1.0; `typebox` latest |
 | Audit | 1 high transitive devDependency finding (`brace-expansion` via the Pi SDK; not shipped in the package) |
-| Last roadmap refresh | 2026-10-05 (DOT-2144) |
+| Last roadmap refresh | 2026-11-04 (DOT-3197) |
 
 v0.2.15 shipped the README/Pi-invocation correction for the git summary tools. The
 unreleased `0.2.16` package corrects the documented model-routing example and
