@@ -6,6 +6,7 @@
 
 - Correct the documented model-routing examples to model ids that the Pi catalog actually ships (`claude-haiku-4-5`), and explain how to check an id with `pi --list-models`. The previous `claude-3-5-haiku-latest` example produced a `Model "..." not found` warning at subagent start.
 - Show the tool examples as chat requests with their equivalent tool arguments, matching how Pi actually invokes extension tools.
+- State what the `git_diff_summary` and `git_blame_summary` examples actually cover: `git_diff_summary` with `ref` set to `HEAD~3` runs `git diff HEAD~3`, which also includes uncommitted tracked changes and is not a three-commit window, and blame summarizes the contributors of surviving lines rather than the file's most recent commit.
 - Add `tests/docs-examples.test.mjs` to fail CI when a documented settings example uses a model id that is absent from the pinned Pi SDK catalog or a key the extension does not read.
 - Clarify how to invoke the git summary tools in Pi and document the `git_diff_summary` default.
 - Pin `@earendil-works/pi-*` devDependencies to `1.2.0` and verify extension behavior against the actual Pi host.
