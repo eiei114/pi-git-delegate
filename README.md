@@ -87,7 +87,7 @@ Manual example for `.pi/settings.json`:
 ```json
 {
   "pi-git-delegate": {
-    "diff": { "provider": "anthropic", "model": "claude-3-5-haiku-latest" },
+    "diff": { "provider": "anthropic", "model": "claude-haiku-4-5" },
     "log": { "provider": null, "model": null },
     "blame": { "provider": null, "model": null }
   }
@@ -95,6 +95,12 @@ Manual example for `.pi/settings.json`:
 ```
 
 `null` means "use the current session provider/model".
+
+Use a model id that exists in your Pi catalog. `pi --list-models <pattern>`
+prints the ids and the provider that owns them; the same pattern works for the
+`diffModel` / `logModel` / `blameModel` shorthand. A wrong id is not rejected
+when the settings load — Pi only warns and treats it as a custom model id when
+the subagent runs.
 
 ## Tool examples
 
