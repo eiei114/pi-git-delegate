@@ -18,13 +18,33 @@ Try it locally:
 pi -e .
 ```
 
-Then call a tool from Pi:
+Then ask Pi in chat to use a tool. Pi calls them from your request; the JSON
+notation below only shows the arguments each tool accepts.
 
 ```txt
-git_diff_summary({ref: "HEAD~3"})
-git_log_summary({range: "HEAD~5..HEAD"})
-git_blame_summary({path: "lib/config.ts"})
+Summarize the changes since HEAD~3, including uncommitted tracked changes, with git_diff_summary (ref HEAD~3).
+Give me a digest of the commits in HEAD~5..HEAD with git_log_summary.
+Who has contributed to lib/config.ts? Use git_blame_summary.
 ```
+
+Equivalent tool arguments:
+
+```txt
+git_diff_summary   { ref: "HEAD~3" }
+git_log_summary    { range: "HEAD~5..HEAD" }
+git_blame_summary  { path: "lib/config.ts" }
+```
+
+Each tool runs one fixed Git command, so the arguments mean exactly what that
+command means:
+
+- `ref` on `git_diff_summary` is passed to `git diff <ref>`. It compares the
+  working tree with that commit, so the summary covers every change since then
+  **and** any uncommitted changes to tracked files. It is not a "last N commits"
+  range; for committed-only history use `git_log_summary`.
+- `git_blame_summary` reports the last commit to each line that still exists in
+  the file. It is a contributor summary, not the file's most recent commit: a
+  commit that only deletes lines does not appear in the blame output.
 
 ## Settings
 
@@ -40,7 +60,7 @@ Manual example for `.pi/settings.json`:
 ```json
 {
   "pi-git-delegate": {
-    "diff": { "provider": "anthropic", "model": "claude-3-5-haiku-latest" },
+    "diff": { "provider": "anthropic", "model": "claude-haiku-4-5" },
     "log": { "provider": null, "model": null },
     "blame": { "provider": null, "model": null }
   }
@@ -52,7 +72,7 @@ Model-only shorthand is also supported (uses the session provider):
 ```json
 {
   "pi-git-delegate": {
-    "diffModel": "claude-3-5-haiku-latest",
+    "diffModel": "claude-haiku-4-5",
     "logModel": "gpt-4.1-mini",
     "blameModel": "gemini-2.5-flash"
   }
@@ -60,6 +80,11 @@ Model-only shorthand is also supported (uses the session provider):
 ```
 
 `null` uses the current session provider/model.
+
+Every id above must exist in your Pi catalog. `pi --list-models <pattern>`
+lists the ids with their owning provider, for example `claude-haiku-4-5` on
+`anthropic`. Settings load without validating ids, so a typo only surfaces as
+a `Model "..." not found` warning when the subagent starts.
 
 ## Failure recovery and retry boundaries
 
@@ -86,8 +111,11 @@ read-only Git command and, when applicable, an isolated subagent process.
 For example, from a Pi session:
 
 ```txt
-git_diff_summary({ref: "HEAD~3"})
+Summarize the changes since HEAD~3 with git_diff_summary.
 ```
+
+That tool call takes `ref: "HEAD~3"`, so it summarizes `git diff HEAD~3`: every
+change since that commit, including uncommitted changes to tracked files.
 
 If this reports `unknown revision`, use an existing revision and call the tool
 again. Do not use these delegated tools for write operations such as `git
