@@ -38,18 +38,18 @@ unless they directly serve the cost/context-leverage thesis.
 | Test files | 12 (`commands`, `config`, `docs-examples`, `git-exec`, `git-summary-pipeline`, `pi-sdk-smoke-artifacts`, `pi-sdk-smoke-contract`, `prompts`, `registration`, `smoke`, `subagent-runner`, `tools`) |
 | Open issues | 0 |
 | Open PRs | 1 (grouped Dependabot devDependency update) |
-| DevDependencies | `@earendil-works/*` 1.2.0; `@types/node` ^26.1.0; `typebox` latest |
+| DevDependencies | `@earendil-works/*` 1.5.0; `@types/node` ^26.1.0; `typebox` latest |
 | Audit | 1 high transitive devDependency finding (`brace-expansion` via the Pi SDK; not shipped in the package) |
 | Last roadmap refresh | 2026-11-04 (DOT-3197) |
 
 v0.2.15 shipped the README/Pi-invocation correction for the git summary tools. The
 unreleased `0.2.16` package corrects the documented model-routing example and
-consolidates the SDK `1.2.0` compatibility update with the shared routing
+consolidates the SDK `1.5.0` compatibility update with the shared routing
 parameter types; ordinary merges no longer trigger release or publication.
 v0.2.11 shipped the Pi SDK `0.99.1` alignment. v0.2.10 and v0.2.9 were
 periodic patch releases, while v0.2.5 rolled up the 2026-08-22 managed OSS
 dependency and maintenance batch. GitHub currently has no open issues and one
-open grouped Dependabot update for `typebox` and `@types/node`; its CI is green.
+open grouped Dependabot update for Pi SDK, `typebox`, and `@types/node`.
 The next release should roll up any remaining maintenance seeds listed below.
 
 ## Short-term goals (next 2–3 releases)

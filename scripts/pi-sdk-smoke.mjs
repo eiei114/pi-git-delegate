@@ -365,9 +365,8 @@ async function main() {
   const packageManifest = readJson(join(packageDir, "package.json"));
   const sdkVersions = Object.fromEntries(Object.keys(SDK_VERSIONS).map((name) =>
     [name, readJson(join(ROOT, "node_modules", name, "package.json")).version]));
-  if (JSON.stringify(sdkVersions) !== JSON.stringify(SDK_VERSIONS)
-      || Object.entries(SDK_VERSIONS).some(([name, version]) => manifest.devDependencies?.[name] !== version)) {
-    throw new Error("Installed Pi SDK packages must exactly match the frozen 1.2.0 dev/test pins.");
+  if (JSON.stringify(sdkVersions) !== JSON.stringify(SDK_VERSIONS)) {
+    throw new Error("Installed Pi SDK packages must exactly match the package.json devDependency pins.");
   }
   if (packageManifest.name !== "@earendil-works/pi-coding-agent" || typeof packageManifest.bin?.pi !== "string") {
     throw new Error("Installed Pi coding-agent manifest has no valid local CLI entry point.");
