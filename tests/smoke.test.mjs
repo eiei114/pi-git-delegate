@@ -90,7 +90,7 @@ test("changelog documents shipped releases and keeps prepared changes under Unre
   const unreleasedBody = changelog.split("## [Unreleased]")[1]?.split(/^## \[/m)[0] ?? "";
   assert.match(
     unreleasedBody,
-    /derive smoke expectations from the exact `package\.json` pins so Dependabot updates remain verifiable against the actual Pi host/i,
+    /development TypeBox with the coding agent's `1\.3\.27` dependency.*actual Pi host.*deterministic offline smoke harness/i,
   );
 });
 
