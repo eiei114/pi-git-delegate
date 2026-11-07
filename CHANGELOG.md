@@ -10,7 +10,7 @@
 - Add `tests/docs-examples.test.mjs` to fail CI when a documented settings example uses a model id that is absent from the pinned Pi SDK catalog or a key the extension does not read.
 - Fail CI when the `ROADMAP.md` test-file inventory stops matching `tests/*.test.mjs`, and correct the row to list all twelve files.
 - Clarify how to invoke the git summary tools in Pi and document the `git_diff_summary` default.
-- Update Pi SDK devDependency pins to `1.4.0` and derive smoke expectations from the exact `package.json` pins so Dependabot updates remain verifiable against the actual Pi host.
+- Pin Pi SDK devDependencies to `1.5.0`, align the extension's development TypeBox with the coding agent's `1.3.27` dependency, and verify the extension in an actual Pi host with the deterministic offline smoke harness.
 - Share per-call provider/model parameter types across the three git summary tools.
 
 ## [0.2.12] - 2026-10-12
