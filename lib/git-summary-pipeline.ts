@@ -70,10 +70,22 @@ export async function executeGitSummaryPipeline(
     const custom = onGitFailure?.(gitResult);
     if (custom) return custom;
 
-    const error =
-      gitResult.stderr ||
-      gitResult.stdout ||
-      `${gitFailureLabel} failed with exit code ${gitResult.status}`;
+    let error: string;
+    if (gitResult.error && /\bENOBUFS\b/i.test(gitResult.error)) {
+      error = `${gitFailureLabel} output exceeded the 10 MiB limit; narrow the ref or path.`;
+    } else if (gitResult.error && /\bENOENT\b/i.test(gitResult.error)) {
+      error = "git executable not found.";
+    } else if (gitResult.error) {
+      const signal = gitResult.error.match(/\b(SIG[A-Z0-9]+)\b/i)?.[1];
+      error = signal
+        ? `${gitFailureLabel} was terminated by ${signal}.`
+        : `${gitFailureLabel} failed: ${gitResult.error}`;
+    } else {
+      error =
+        gitResult.stderr ||
+        gitResult.stdout ||
+        `${gitFailureLabel} failed with exit code ${gitResult.status}`;
+    }
     return textResult(error, { ...details, error: true });
   }
 

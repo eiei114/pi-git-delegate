@@ -88,6 +88,66 @@ test("executeGitSummaryPipeline delegates to subagent on non-empty git output", 
   assert.equal(result.details.ref, "HEAD");
 });
 
+test("executeGitSummaryPipeline explains output overflow without invoking the subagent", async () => {
+  const cwd = createTempGitRepo();
+  const largeFile = join(cwd, "large.txt");
+  writeFileSync(largeFile, "x".repeat(11 * 1024 * 1024), "utf8");
+  execSync("git add --intent-to-add large.txt", { cwd, stdio: "ignore" });
+  let subagentCalls = 0;
+  setSubagentRunnerForTests(async () => {
+    subagentCalls += 1;
+    return { exitCode: 0, outputText: "unexpected", stderr: "" };
+  });
+
+  const result = await executeGitSummaryPipeline({
+    toolName: "git_diff_summary",
+    gitArgs: ["diff", "--", "large.txt"],
+    summaryPrompt: DIFF_SUMMARY_PROMPT,
+    cwd,
+    details: { ref: "HEAD" },
+    gitFailureLabel: "git diff",
+    emptyMessage: "No changes found.",
+  });
+
+  assert.equal(
+    result.content[0].text,
+    "git diff output exceeded the 10 MiB limit; narrow the ref or path.",
+  );
+  assert.equal(result.details.error, true);
+  assert.equal(subagentCalls, 0);
+});
+
+test("executeGitSummaryPipeline explains a missing git executable without invoking the subagent", async () => {
+  const cwd = createTempGitRepo();
+  const pathKey = Object.keys(process.env).find((key) => key.toLowerCase() === "path") ?? "PATH";
+  const originalPath = process.env[pathKey];
+  let subagentCalls = 0;
+  setSubagentRunnerForTests(async () => {
+    subagentCalls += 1;
+    return { exitCode: 0, outputText: "unexpected", stderr: "" };
+  });
+  process.env[pathKey] = "";
+
+  try {
+    const result = await executeGitSummaryPipeline({
+      toolName: "git_diff_summary",
+      gitArgs: ["diff", "HEAD"],
+      summaryPrompt: DIFF_SUMMARY_PROMPT,
+      cwd,
+      details: { ref: "HEAD" },
+      gitFailureLabel: "git diff",
+      emptyMessage: "No changes found.",
+    });
+
+    assert.equal(result.content[0].text, "git executable not found.");
+    assert.equal(result.details.error, true);
+    assert.equal(subagentCalls, 0);
+  } finally {
+    if (originalPath === undefined) delete process.env[pathKey];
+    else process.env[pathKey] = originalPath;
+  }
+});
+
 test("executeGitSummaryPipeline uses onGitFailure before default git error", async () => {
   const cwd = createTempGitRepo();
 
