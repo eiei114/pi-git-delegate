@@ -35,6 +35,7 @@ test("runGit returns success output for a valid git command", () => {
   assert.equal(result.status, 0);
   assert.equal(result.stdout, "initial");
   assert.equal(result.stderr, "");
+  assert.equal(result.error, undefined);
 });
 
 test("runGit returns non-zero status for an invalid git invocation", () => {
@@ -45,4 +46,34 @@ test("runGit returns non-zero status for an invalid git invocation", () => {
   assert.notEqual(result.status, 0);
   const output = `${result.stdout}\n${result.stderr}`.trim();
   assert.ok(output.length > 0, "expected non-empty output for invalid ref");
+  assert.equal(result.error, undefined);
+});
+
+test("runGit exposes output overflow from spawnSync", () => {
+  const cwd = createTempGitRepo();
+  const largeFile = join(cwd, "large.txt");
+  writeFileSync(largeFile, "x".repeat(11 * 1024 * 1024), "utf8");
+  execSync("git add --intent-to-add large.txt", { cwd, stdio: "ignore" });
+
+  const result = runGit(["diff", "--", "large.txt"], cwd);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.error ?? "", /\bENOBUFS\b/);
+});
+
+test("runGit exposes a missing git executable", () => {
+  const cwd = createTempGitRepo();
+  const pathKey = Object.keys(process.env).find((key) => key.toLowerCase() === "path") ?? "PATH";
+  const originalPath = process.env[pathKey];
+  process.env[pathKey] = "";
+
+  try {
+    const result = runGit(["--version"], cwd);
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.error ?? "", /\bENOENT\b/);
+  } finally {
+    if (originalPath === undefined) delete process.env[pathKey];
+    else process.env[pathKey] = originalPath;
+  }
 });
