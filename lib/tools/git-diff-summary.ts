@@ -1,4 +1,5 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { rejectOptionLikeRevision } from "../git-args.ts";
 import {
   createGitSummaryPipelineOptions,
   executeGitSummaryPipeline,
@@ -16,6 +17,8 @@ export async function executeGitDiffSummary(
   signal?: AbortSignal,
 ) {
   const ref = params.ref?.trim() || "HEAD";
+  const invalidRef = rejectOptionLikeRevision(ref, "ref");
+  if (invalidRef) return invalidRef;
 
   return executeGitSummaryPipeline(
     createGitSummaryPipelineOptions(

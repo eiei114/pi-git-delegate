@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -57,6 +57,31 @@ test("git_diff_summary returns summary without raw diff in response", async () =
   assert.doesNotMatch(result.content[0].text, /diff --git/);
 });
 
+test("git_diff_summary rejects option-like refs before git or the subagent can run", async () => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "README.md"), "committed\n", "utf8");
+  commitAll(cwd, "initial");
+  writeFileSync(join(cwd, "README.md"), "working tree change\n", "utf8");
+  const outputPath = join(cwd, "diff-output.patch");
+  let runnerCalls = 0;
+  const echoRunner = createEchoSubagentRunner();
+  setSubagentRunnerForTests(async (request) => {
+    runnerCalls += 1;
+    return echoRunner(request);
+  });
+
+  try {
+    const result = await executeGitDiffSummary({ ref: ` --output=${outputPath} ` }, { cwd });
+
+    assert.equal(result.content[0].text, "ref must not start with '-'.");
+    assert.equal(result.details.error, true);
+    assert.equal(existsSync(outputPath), false);
+    assert.equal(runnerCalls, 0);
+  } finally {
+    setSubagentRunnerForTests(createEchoSubagentRunner("Delegated git summary."));
+  }
+});
+
 test("git_log_summary returns empty message without subagent when range has no commits", async () => {
   const cwd = createTempGitRepo();
 
@@ -76,6 +101,30 @@ test("git_log_summary returns digest without raw log in response", async () => {
   assert.doesNotMatch(result.content[0].text, /feat: one/);
 });
 
+test("git_log_summary rejects option-like ranges before git or the subagent can run", async () => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "README.md"), "initial\n", "utf8");
+  commitAll(cwd, "initial");
+  const outputPath = join(cwd, "log-output.txt");
+  let runnerCalls = 0;
+  const echoRunner = createEchoSubagentRunner();
+  setSubagentRunnerForTests(async (request) => {
+    runnerCalls += 1;
+    return echoRunner(request);
+  });
+
+  try {
+    const result = await executeGitLogSummary({ range: ` --output=${outputPath} ` }, { cwd });
+
+    assert.equal(result.content[0].text, "range must not start with '-'.");
+    assert.equal(result.details.error, true);
+    assert.equal(existsSync(outputPath), false);
+    assert.equal(runnerCalls, 0);
+  } finally {
+    setSubagentRunnerForTests(createEchoSubagentRunner("Delegated git summary."));
+  }
+});
+
 test("git_blame_summary returns empty message without subagent when blame output is empty", async () => {
   const cwd = createTempGitRepo();
   writeFileSync(join(cwd, "empty.txt"), "", "utf8");
@@ -84,6 +133,31 @@ test("git_blame_summary returns empty message without subagent when blame output
   const result = await executeGitBlameSummary({ path: "empty.txt" }, { cwd });
   assert.equal(result.content[0].text, "No blame data found for empty.txt.");
   assert.equal(result.details.empty, true);
+});
+
+test("git_blame_summary rejects option-like refs before git or the subagent can run", async () => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "README.md"), "initial\n", "utf8");
+  commitAll(cwd, "initial");
+  let runnerCalls = 0;
+  const echoRunner = createEchoSubagentRunner();
+  setSubagentRunnerForTests(async (request) => {
+    runnerCalls += 1;
+    return echoRunner(request);
+  });
+
+  try {
+    const result = await executeGitBlameSummary(
+      { path: "README.md", ref: " --ext-diff " },
+      { cwd },
+    );
+
+    assert.equal(result.content[0].text, "ref must not start with '-'.");
+    assert.equal(result.details.error, true);
+    assert.equal(runnerCalls, 0);
+  } finally {
+    setSubagentRunnerForTests(createEchoSubagentRunner("Delegated git summary."));
+  }
 });
 
 test("git_blame_summary returns error for missing file without subagent", async () => {
