@@ -18,8 +18,16 @@ function createTempGitRepo() {
   return cwd;
 }
 
+const tempDirs = [];
+
+function createPlainTempDir() {
+  const cwd = mkdtempSync(join(tmpdir(), "pi-git-delegate-git-exec-plain-"));
+  tempDirs.push(cwd);
+  return cwd;
+}
+
 test.after(() => {
-  for (const cwd of tempRepos.splice(0)) {
+  for (const cwd of [...tempRepos.splice(0), ...tempDirs.splice(0)]) {
     rmSync(cwd, { recursive: true, force: true });
   }
 });
@@ -46,6 +54,26 @@ test("runGit returns non-zero status for an invalid git invocation", () => {
   assert.notEqual(result.status, 0);
   const output = `${result.stdout}\n${result.stderr}`.trim();
   assert.ok(output.length > 0, "expected non-empty output for invalid ref");
+  assert.equal(result.error, undefined);
+});
+
+test("runGit preserves stderr for a non-zero git command without a spawn error", () => {
+  const cwd = createTempGitRepo();
+
+  const result = runGit(["rev-parse", "--verify", "not-a-real-ref"], cwd);
+
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stderr.length > 0, "expected git diagnostic on stderr");
+  assert.equal(result.error, undefined);
+});
+
+test("runGit reports a git diagnostic when run outside a repository", () => {
+  const cwd = createPlainTempDir();
+
+  const result = runGit(["status"], cwd);
+
+  assert.notEqual(result.status, 0);
+  assert.ok(result.stderr.length > 0, "expected git diagnostic on stderr outside a repository");
   assert.equal(result.error, undefined);
 });
 
