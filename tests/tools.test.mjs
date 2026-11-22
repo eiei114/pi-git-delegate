@@ -205,6 +205,42 @@ test("git_blame_summary uses blameModel config and lets model parameter override
   assert.equal(overridden.details.model, "override-model");
 });
 
+function writePiGitDelegateSettings(cwd, settings) {
+  mkdirSync(join(cwd, ".pi"), { recursive: true });
+  writeFileSync(join(cwd, ".pi", "settings.json"), JSON.stringify({ "pi-git-delegate": settings }), "utf8");
+}
+
+test("git_diff_summary uses diffModel config and lets model parameter override it", async () => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "README.md"), "hello\n", "utf8");
+  commitAll(cwd, "initial");
+  writeFileSync(join(cwd, "README.md"), "hello world\n", "utf8");
+  writePiGitDelegateSettings(cwd, { diffModel: "configured-diff-model", logModel: "configured-log-model" });
+
+  const configured = await executeGitDiffSummary({ ref: "HEAD" }, { cwd });
+  assert.equal(configured.content[0].text, "Delegated git summary.");
+  assert.equal(configured.details.model, "configured-diff-model");
+
+  const overridden = await executeGitDiffSummary({ ref: "HEAD", model: "override-model" }, { cwd });
+  assert.equal(overridden.details.model, "override-model");
+});
+
+test("git_log_summary uses logModel config and lets model parameter override it", async () => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "README.md"), "first\n", "utf8");
+  commitAll(cwd, "initial");
+  writeFileSync(join(cwd, "README.md"), "second\n", "utf8");
+  commitAll(cwd, "update README");
+  writePiGitDelegateSettings(cwd, { diffModel: "configured-diff-model", logModel: "configured-log-model" });
+
+  const configured = await executeGitLogSummary({ range: "HEAD~1..HEAD" }, { cwd });
+  assert.equal(configured.content[0].text, "Delegated git summary.");
+  assert.equal(configured.details.model, "configured-log-model");
+
+  const overridden = await executeGitLogSummary({ range: "HEAD~1..HEAD", model: "override-model" }, { cwd });
+  assert.equal(overridden.details.model, "override-model");
+});
+
 test("all git summary tools preserve per-call provider and model overrides", async () => {
   const cwd = createTempGitRepo();
   writeFileSync(join(cwd, "README.md"), "first revision\n", "utf8");
