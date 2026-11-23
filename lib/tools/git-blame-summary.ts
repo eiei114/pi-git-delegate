@@ -18,8 +18,8 @@ export async function executeGitBlameSummary(
   ctx: ExtensionContext,
   signal?: AbortSignal,
 ) {
-  const filePath = params.path?.trim();
-  if (!filePath) {
+  const filePath = params.path;
+  if (!filePath?.trim()) {
     return textResult("path is required.", { error: true });
   }
 

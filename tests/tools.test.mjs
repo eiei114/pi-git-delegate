@@ -228,6 +228,39 @@ test("git_blame_summary returns error for missing file without subagent", async 
   assert.notEqual(result.content[0].text, "Delegated git summary.");
 });
 
+test("git_blame_summary rejects missing and blank path inputs before delegation", async () => {
+  for (const params of [{}, { path: "" }, { path: " \t\n" }]) {
+    const result = await executeGitBlameSummary(params, {});
+    assert.equal(result.content[0].text, "path is required.");
+    assert.equal(result.details.error, true);
+  }
+});
+
+test("git_blame_summary preserves a tracked path with leading whitespace", async () => {
+  const cwd = createTempGitRepo();
+  const path = " notes.txt";
+  writeFileSync(join(cwd, path), "content from the literal path\n", "utf8");
+  writeFileSync(join(cwd, path.trim()), "content from the trimmed path\n", "utf8");
+  commitAll(cwd, "add both files");
+
+  const echoRunner = createEchoSubagentRunner("Delegated git summary.");
+  const prompts = [];
+  setSubagentRunnerForTests(async (request) => {
+    prompts.push(request.prompt);
+    return echoRunner(request);
+  });
+
+  try {
+    const result = await executeGitBlameSummary({ path }, { cwd });
+    assert.equal(result.content[0].text, "Delegated git summary.");
+    assert.equal(prompts.length, 1);
+    assert.match(prompts[0], /content from the literal path/);
+    assert.equal(result.details.path, path);
+  } finally {
+    setSubagentRunnerForTests(echoRunner);
+  }
+});
+
 test("git_blame_summary returns contributor summary without raw blame", async () => {
   const cwd = createTempGitRepo();
   mkdirSync(join(cwd, "src"), { recursive: true });
