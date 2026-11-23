@@ -17,10 +17,11 @@ export async function executeGitLogSummary(
   ctx: ExtensionContext,
   signal?: AbortSignal,
 ) {
-  const range = params.range?.trim() || "HEAD~10..HEAD";
+  const range = params.range?.trim() ?? "";
   const invalidRange = rejectOptionLikeRevision(range, "range");
   if (invalidRange) return invalidRange;
 
+  const details = { range: range || "HEAD" };
   return executeGitSummaryPipeline(
     createGitSummaryPipelineOptions(
       ctx,
@@ -28,14 +29,16 @@ export async function executeGitLogSummary(
       signal,
       {
         toolName: "git_log_summary",
-        gitArgs: ["log", "--oneline", range],
+        gitArgs: range
+          ? ["log", "--oneline", range]
+          : ["log", "--oneline", "-n", "10", "HEAD", "--"],
         summaryPrompt: LOG_SUMMARY_PROMPT,
-        details: { range },
+        details,
         gitFailureLabel: "git log",
         emptyMessage: "No commits in range.",
         onGitFailure: (gitResult) => {
           if (isNoCommitsInRange(gitResult.stderr)) {
-            return textResult("No commits in range.", { range, empty: true });
+            return textResult("No commits in range.", { ...details, empty: true });
           }
           return undefined;
         },
