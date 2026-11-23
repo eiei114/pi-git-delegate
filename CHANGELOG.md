@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Cancel `/git-delegate:configure` without saving when a provider or model prompt is dismissed. Submitting a blank field still selects the session default.
+
 ### Changed
 
 - Correct the documented model-routing examples to model ids that the Pi catalog actually ships (`claude-haiku-4-5`), and explain how to check an id with `pi --list-models`. The previous `claude-3-5-haiku-latest` example produced a `Model "..." not found` warning at subagent start.

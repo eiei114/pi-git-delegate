@@ -145,13 +145,15 @@ async function promptForRoute(
   },
   toolKey: GitDelegateToolKey,
   current: ModelRoute,
-): Promise<ModelRoute> {
-  const provider = (await ui.input(`${TOOL_LABELS[toolKey]} provider (empty = null)`, current.provider ?? ""))?.trim();
-  const model = (await ui.input(`${TOOL_LABELS[toolKey]} model (empty = null)`, current.model ?? ""))?.trim();
+): Promise<ModelRoute | undefined> {
+  const provider = await ui.input(`${TOOL_LABELS[toolKey]} provider (empty = null)`, current.provider ?? "");
+  if (provider === undefined) return undefined;
+  const model = await ui.input(`${TOOL_LABELS[toolKey]} model (empty = null)`, current.model ?? "");
+  if (model === undefined) return undefined;
 
   return {
-    provider: provider ? provider : null,
-    model: model ? model : null,
+    provider: provider.trim() || null,
+    model: model.trim() || null,
   };
 }
 
@@ -174,9 +176,11 @@ export async function promptForGitDelegateConfig(
     };
   }
 
-  return {
-    diff: await promptForRoute(ui, "diff", defaults.diff),
-    log: await promptForRoute(ui, "log", defaults.log),
-    blame: await promptForRoute(ui, "blame", defaults.blame),
-  };
+  const diff = await promptForRoute(ui, "diff", defaults.diff);
+  if (diff === undefined) return undefined;
+  const log = await promptForRoute(ui, "log", defaults.log);
+  if (log === undefined) return undefined;
+  const blame = await promptForRoute(ui, "blame", defaults.blame);
+  if (blame === undefined) return undefined;
+  return { diff, log, blame };
 }
