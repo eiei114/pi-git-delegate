@@ -89,6 +89,64 @@ test("git_log_summary returns empty message without subagent when range has no c
   assert.equal(result.content[0].text, "No commits in range.");
 });
 
+function captureDelegatedLogs(t) {
+  const logs = [];
+  const echoRunner = createEchoSubagentRunner();
+  setSubagentRunnerForTests(async (request) => {
+    const log = request.prompt.split("\nGit output:\n")[1].trim();
+    logs.push(log.split(/\r?\n/).map((line) => line.replace(/^\S+ /, "")));
+    return echoRunner(request);
+  });
+  t.after(() => setSubagentRunnerForTests(createEchoSubagentRunner()));
+  return logs;
+}
+
+test("git_log_summary delegates all available commits for missing and blank ranges in short history", async (t) => {
+  const cwd = createTempGitRepo();
+  writeFileSync(join(cwd, "README.md"), "one\n", "utf8");
+  commitAll(cwd, "first commit");
+  writeFileSync(join(cwd, "README.md"), "two\n", "utf8");
+  commitAll(cwd, "second commit");
+  const logs = captureDelegatedLogs(t);
+
+  for (const params of [{}, { range: " \t " }]) {
+    const result = await executeGitLogSummary(params, { cwd });
+    assert.equal(result.content[0].text, "Delegated git summary.");
+  }
+  assert.deepEqual(logs, [
+    ["second commit", "first commit"],
+    ["second commit", "first commit"],
+  ]);
+});
+
+test("git_log_summary caps the default log at ten commits but does not cap explicit ranges", async (t) => {
+  const cwd = createTempGitRepo();
+  const subjects = Array.from({ length: 12 }, (_, index) => `commit ${index + 1}`);
+  for (const subject of subjects) {
+    writeFileSync(join(cwd, "README.md"), `${subject}\n`, "utf8");
+    commitAll(cwd, subject);
+  }
+  const logs = captureDelegatedLogs(t);
+
+  await executeGitLogSummary({}, { cwd });
+  const explicit = await executeGitLogSummary({ range: " HEAD~11..HEAD " }, { cwd });
+
+  const newestFirst = subjects.reverse();
+  assert.deepEqual(logs, [newestFirst.slice(0, 10), newestFirst.slice(0, 11)]);
+  assert.equal(explicit.details.range, "HEAD~11..HEAD");
+});
+
+test("git_log_summary returns empty without delegating when HEAD is unborn", async (t) => {
+  const cwd = createTempGitRepo();
+  const logs = captureDelegatedLogs(t);
+
+  const result = await executeGitLogSummary({}, { cwd });
+
+  assert.equal(result.content[0].text, "No commits in range.");
+  assert.equal(result.details.empty, true);
+  assert.deepEqual(logs, []);
+});
+
 test("git_log_summary returns digest without raw log in response", async () => {
   const cwd = createTempGitRepo();
   writeFileSync(join(cwd, "README.md"), "one\n", "utf8");

@@ -15,7 +15,7 @@ const gitDiffSummaryParameters = Type.Object({
 });
 
 const gitLogSummaryParameters = Type.Object({
-  range: Type.Optional(Type.String({ description: 'Git log range (default: "HEAD~10..HEAD").' })),
+  range: Type.Optional(Type.String({ description: "Git log range. If omitted or blank, summarize up to 10 recent commits from HEAD." })),
   ...modelOverrideParameters,
 });
 
