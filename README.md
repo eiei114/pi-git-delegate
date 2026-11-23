@@ -75,6 +75,7 @@ Model routing is optional. Run in Pi:
 ```
 
 This shows what each key does, prints a starter JSON block, and can save it to `.pi/settings.json` interactively.
+Dismiss any provider or model prompt to cancel without saving. Submit a blank field to use the session provider or model for that field.
 
 Check the current routing anytime with:
 
