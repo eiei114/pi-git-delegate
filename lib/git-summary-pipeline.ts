@@ -101,6 +101,12 @@ export async function executeGitSummaryPipeline(
     signal,
   });
 
+  if (subagent.exitCode !== 0) {
+    const failure = `Subagent failed with exit code ${subagent.exitCode}`;
+    const stderr = subagent.stderr.trim();
+    return textResult(stderr ? `${failure}: ${stderr}` : `${failure}.`, { ...details, error: true });
+  }
+
   if (!subagent.outputText) {
     const error = subagent.stderr || "Subagent returned no summary.";
     return textResult(error, { ...details, error: true });

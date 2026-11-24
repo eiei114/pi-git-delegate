@@ -29,7 +29,7 @@ function commitAll(cwd, message) {
   execSync(`git commit -m "${message}"`, { cwd, stdio: "ignore" });
 }
 
-test.before(() => {
+test.beforeEach(() => {
   setSubagentRunnerForTests(createEchoSubagentRunner("Pipeline summary."));
 });
 
@@ -80,13 +80,56 @@ test("executeGitSummaryPipeline delegates to subagent on non-empty git output", 
     summaryPrompt: DIFF_SUMMARY_PROMPT,
     cwd,
     details: { ref: "HEAD" },
+    override: { provider: "anthropic", model: "claude-haiku-4-5" },
     gitFailureLabel: "git diff",
     emptyMessage: "No changes found.",
   });
 
   assert.equal(result.content[0].text, "Pipeline summary.");
-  assert.equal(result.details.ref, "HEAD");
+  assert.deepEqual(result.details, {
+    ref: "HEAD",
+    provider: "anthropic",
+    model: "claude-haiku-4-5",
+  });
 });
+
+for (const { stderr, diagnostic, description } of [
+  {
+    stderr: "  Model not found; check the configured model ID.\n",
+    diagnostic: "Subagent failed with exit code 1: Model not found; check the configured model ID.",
+    description: "reports stderr instead of partial output",
+  },
+  {
+    stderr: "   \n",
+    diagnostic: "Subagent failed with exit code 1.",
+    description: "reports the exit code when stderr is blank",
+  },
+]) {
+  test(`executeGitSummaryPipeline ${description} on subagent failure`, async () => {
+    const cwd = createTempGitRepo();
+    writeFileSync(join(cwd, "README.md"), "hello\n", "utf8");
+    commitAll(cwd, "initial");
+    writeFileSync(join(cwd, "README.md"), "hello world\n", "utf8");
+    setSubagentRunnerForTests(async () => ({
+      exitCode: 1,
+      outputText: "Partial summary.",
+      stderr,
+    }));
+
+    const result = await executeGitSummaryPipeline({
+      toolName: "git_diff_summary",
+      gitArgs: ["diff", "HEAD"],
+      summaryPrompt: DIFF_SUMMARY_PROMPT,
+      cwd,
+      details: { ref: "HEAD" },
+      gitFailureLabel: "git diff",
+      emptyMessage: "No changes found.",
+    });
+
+    assert.deepEqual(result.details, { ref: "HEAD", error: true });
+    assert.deepEqual(result.content, [{ type: "text", text: diagnostic }]);
+  });
+}
 
 test("executeGitSummaryPipeline explains output overflow without invoking the subagent", async () => {
   const cwd = createTempGitRepo();
