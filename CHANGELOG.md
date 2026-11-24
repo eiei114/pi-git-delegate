@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Report failed Git Delegate subagent runs as errors instead of returning their partial output as a summary.
 - Preserve leading spaces in tracked filenames passed to `git_blame_summary`.
 - Cancel `/git-delegate:configure` without saving when a provider or model prompt is dismissed. Submitting a blank field still selects the session default.
 
